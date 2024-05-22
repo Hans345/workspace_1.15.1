@@ -1,0 +1,20 @@
+14:39:51 **** Incremental Build of configuration Debug for project 104_Plecs_StateMachine_Test ****
+make -j8 allcg 
+arm-none-eabi-gcc "../cg/Subsystem_0.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32G474xx -DUSE_HAL_DRIVER -DUSE_FULL_LL_DRIVER -DDEBUG -DEXTERNAL_MODE -c -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/app" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/app/474re" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/pil" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/inc" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/inc_impl" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system/cmsis/include" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system/driver/inc" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system/freertos/include" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system/freertos/portable/GCC/ARM_CM4F" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/system/freertos/CMSIS_RTOS" -I"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/cg" -include"C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/104_Plecs_StateMachine_Test/cg/plx_defines.h" -Ofast -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"cg/Subsystem_0.d" -MT"cg/Subsystem_0.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -mthumb -o "cg/Subsystem_0.o"
+arm-none-eabi-gcc -o "104_Plecs_StateMachine_Test.elf" @"objects.list"  -lpil -mcpu=cortex-m4 -T"C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\104_Plecs_StateMachine_Test\app\474re\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="104_Plecs_StateMachine_Test.map" -Wl,--gc-sections -static -L"C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\104_Plecs_StateMachine_Test\pil" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=softfp -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: 104_Plecs_StateMachine_Test.elf has a LOAD segment with RWX permissions
+Finished building target: 104_Plecs_StateMachine_Test.elf
+ 
+arm-none-eabi-size  104_Plecs_StateMachine_Test.elf 
+arm-none-eabi-objdump -h -S 104_Plecs_StateMachine_Test.elf  > "104_Plecs_StateMachine_Test.list"
+   text	   data	    bss	    dec	    hex	filename
+  22692	     56	   6176	  28924	   70fc	104_Plecs_StateMachine_Test.elf
+Finished building: default.size.stdout
+ 
+Finished building: 104_Plecs_StateMachine_Test.list
+ 
+Copy binary to codegen folder:
+cp "104_Plecs_StateMachine_Test.elf" "C:/Users/raphael.baumeler/OneDrive - OST/MSE/4.Semester/Projektarbeit2/PLECS\STM32_StateMachine_Test_codegen/Subsystem.elf"
+
+14:39:53 Build Finished. 0 errors, 1 warnings. (took 2s.88ms)
+

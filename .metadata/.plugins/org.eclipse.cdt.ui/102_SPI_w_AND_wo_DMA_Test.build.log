@@ -1,0 +1,10 @@
+13:37:24 **** Incremental Build of configuration Debug for project 102_SPI_w_AND_wo_DMA_Test ****
+make -j8 all 
+arm-none-eabi-size  102_SPI_w_AND_wo_DMA_Test.elf 
+   text	   data	    bss	    dec	    hex	filename
+  10940	     20	   1780	  12740	   31c4	102_SPI_w_AND_wo_DMA_Test.elf
+Finished building: default.size.stdout
+ 
+
+13:37:24 Build Finished. 0 errors, 0 warnings. (took 303ms)
+

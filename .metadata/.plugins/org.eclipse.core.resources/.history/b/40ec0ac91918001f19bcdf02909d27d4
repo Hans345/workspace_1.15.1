@@ -1,0 +1,10 @@
+../system/driver/src/stm32g4xx_ll_adc.c:577:13:LL_ADC_CommonDeInit	2
+../system/driver/src/stm32g4xx_ll_adc.c:619:13:LL_ADC_CommonInit	6
+../system/driver/src/stm32g4xx_ll_adc.c:701:6:LL_ADC_CommonStructInit	1
+../system/driver/src/stm32g4xx_ll_adc.c:734:13:LL_ADC_DeInit	12
+../system/driver/src/stm32g4xx_ll_adc.c:1014:13:LL_ADC_Init	2
+../system/driver/src/stm32g4xx_ll_adc.c:1059:6:LL_ADC_StructInit	1
+../system/driver/src/stm32g4xx_ll_adc.c:1101:13:LL_ADC_REG_Init	3
+../system/driver/src/stm32g4xx_ll_adc.c:1188:6:LL_ADC_REG_StructInit	1
+../system/driver/src/stm32g4xx_ll_adc.c:1234:13:LL_ADC_INJ_Init	3
+../system/driver/src/stm32g4xx_ll_adc.c:1305:6:LL_ADC_INJ_StructInit	1

@@ -1,0 +1,3 @@
+../src/hrtim_pcc_stm32g4xx.c:24:24:PLX_HRTIM_PCC_init	0	static
+../src/hrtim_pcc_stm32g4xx.c:37:6:PLX_HRTIM_PCC_configureChannel	0	static,ignoring_inline_asm
+../src/hrtim_pcc_stm32g4xx.c:51:6:PLX_HRTIM_PCC_setPeakCurrent	16	static

@@ -1,0 +1,13 @@
+../src/tim_stm32g4xx.c:24:6:PLX_TIM_sinit	1
+../src/tim_stm32g4xx.c:41:18:PLX_TIM_init	1
+../src/tim_stm32g4xx.c:54:6:PLX_TIM_setup	17
+../src/tim_stm32g4xx.c:124:6:PLX_TIM_addPwmChannel	13
+../src/tim_stm32g4xx.c:189:6:PLX_TIM_start	10
+../src/tim_stm32g4xx.c:235:6:PLX_TIM_processInt	3
+../src/tim_stm32g4xx.c:250:6:PLX_TIM_generateCommutationEvent	1
+../src/tim_stm32g4xx.c:256:6:PLX_TIM_setDuty	5
+../src/tim_stm32g4xx.c:284:6:PLX_TIM_enablePwmOutput	7
+../src/tim_stm32g4xx.c:300:6:PLX_TIM_disablePwmOutput	7
+../src/tim_stm32g4xx.c:316:6:PLX_TIM_pwmOutputIsEnabled	7
+../src/tim_stm32g4xx.c:329:6:PLX_TIM_setPwmOutputState	29
+../src/tim_stm32g4xx.c:509:6:PLX_TIM_scalePeriod	7

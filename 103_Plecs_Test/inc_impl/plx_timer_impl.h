@@ -1,0 +1,111 @@
+/*
+   Copyright (c) 2020 by Plexim GmbH
+   All rights reserved.
+
+   A free license is granted to anyone to use this software for any legal
+   non safety-critical purpose, including commercial applications, provided
+   that:
+   1) IT IS NOT USED TO DIRECTLY OR INDIRECTLY COMPETE WITH PLEXIM, and
+   2) THIS COPYRIGHT NOTICE IS PRESERVED in its entirety.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+ */
+
+#ifndef TIMER_IMPL_H_
+#define TIMER_IMPL_H_
+
+#include "stm32g4xx_hal_tim.h"
+#include "stm32g4xx_ll_tim.h"
+
+typedef enum PLX_TIM_UNIT {
+	PLX_TIM1 = 0,
+	PLX_TIM2,
+	PLX_TIM3,
+	PLX_TIM4,
+	PLX_TIM5,
+	PLX_TIM6,
+	PLX_TIM7,
+	PLX_TIM8,
+	PLX_TIM20
+} PLX_TIM_Unit_t;
+
+typedef enum PLX_TIM_CHANNEL {
+	PLX_TIM_CHANNEL1 = 0,
+	PLX_TIM_CHANNEL2,
+	PLX_TIM_CHANNEL3,
+	PLX_TIM_CHANNEL4
+} PLX_TIM_Channel_t;
+
+typedef enum PLX_TIM_PWM_MODE {
+	PLX_TIM_PWM_SINGLE = 0,
+	PLX_TIM_PWM_COMPLEMENTARY
+} PLX_TIM_PwmMode_t;
+
+typedef enum PLX_TIM_PWM_POLARITY {
+   PLX_TIM_PWM_ACTIVE_HIGH = 0,
+   PLX_TIM_PWM_ACTIVE_LOW
+} PLX_TIM_PwmPolarity_t;
+
+typedef struct PLX_TIM_OBJ
+{
+	PLX_TIM_Unit_t unit;
+	TIM_TypeDef *instance;
+	uint32_t period;
+	uint32_t counterMode;
+	uint32_t repetitionCounter;
+	uint16_t configuredPwmChannelsMask;
+	uint16_t configuredPwmNChannelsMask;
+   uint16_t channelPolarityMask;
+	uint32_t timerClk;
+	float    nominalFrequency;
+} PLX_TIM_Obj_t;
+
+typedef PLX_TIM_Obj_t *PLX_TIM_Handle_t;
+
+__STATIC_INLINE TIM_TypeDef* PLX_TIM_getStmLLHandle(PLX_TIM_Handle_t aHandle)
+{
+	PLX_TIM_Obj_t *obj = (PLX_TIM_Obj_t *)aHandle;
+	return obj->instance;
+}
+
+__STATIC_INLINE void PLX_TIM_enableAllClocks()
+{
+  SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN);
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM3EN);
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM4EN);
+#if defined(TIM5)
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM5EN);
+#endif /* TIM5 */
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM6EN);
+  SET_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM7EN);
+  SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM8EN);
+#if defined(TIM20)
+  SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM20EN);
+#endif /* TIM20 */
+}
+
+__STATIC_INLINE void PLX_TIM_disableAllClocks()
+{
+  CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM2EN);
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM3EN);
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM4EN);
+#if defined(TIM5)
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM5EN);
+#endif /* TIM5 */
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM6EN);
+  CLEAR_BIT(RCC->APB1ENR1, RCC_APB1ENR1_TIM7EN);
+  CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM8EN);
+#if defined(TIM20)
+  CLEAR_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM20EN);
+#endif /* TIM20 */
+}
+
+#endif /* TIMER_IMPL_H_ */

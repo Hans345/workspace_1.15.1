@@ -1,0 +1,3 @@
+../system/driver/src/stm32g4xx_ll_opamp.c:106:13:LL_OPAMP_DeInit	3
+../system/driver/src/stm32g4xx_ll_opamp.c:158:13:LL_OPAMP_Init	3
+../system/driver/src/stm32g4xx_ll_opamp.c:232:6:LL_OPAMP_StructInit	1

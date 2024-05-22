@@ -1,0 +1,3 @@
+../src/opamp_stm32g4xx.c:25:6:PLX_OPAMP_sinit	1
+../src/opamp_stm32g4xx.c:30:20:PLX_OPAMP_init	1
+../src/opamp_stm32g4xx.c:43:6:PLX_OPAMP_setup	7

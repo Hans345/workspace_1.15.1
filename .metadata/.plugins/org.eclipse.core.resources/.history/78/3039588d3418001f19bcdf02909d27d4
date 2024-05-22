@@ -1,0 +1,274 @@
+/*
+ * State machine file for: Subsystem/State Machine
+ * Generated with    : PLECS 4.8.3
+ * Generated on      : 22 May 2024 14:10:42
+ */
+
+typedef float real_t;
+#define REAL_MAX FLT_MAX
+#define REAL_MIN FLT_MIN
+#define REAL_EPSILON FLT_EPSILON
+#include <float.h>
+#include <math.h>
+
+struct FSM_Struct
+{
+   int fsm_isMajorTimeStep;
+   float fsm_currentTime;
+   const float *fsm_internalConstants;
+   const float ***fsm_inputs;
+   float ***fsm_outputs;
+   float *fsm_discStates;
+   float *fsm_zCSignals;
+   int *fsm_takenTransitions;
+   float *fsm_nextSampleHit;
+   float fsm_samplingFrequency;
+   const char **fsm_errorStatus;
+   const char **fsm_warningStatus;
+};
+
+enum FSM_State
+{
+   FSM_STATE_NONE,
+   FSM_STATE_IDLE,
+   FSM_STATE_LEDON,
+   FSM_STATE_LEDBLINK
+};
+
+enum FSM_Transition
+{
+   FSM_TRANSITION_NONE,
+   FSM_TRANSITION_IDLE_1,
+   FSM_INITIAL_TRANSITION,
+   FSM_TRANSITION_LEDON_1,
+   FSM_TRANSITION_LEDON_2,
+   FSM_TRANSITION_LEDBLINK_1,
+   FSM_TRANSITION_LEDBLINK_2
+};
+
+#define FSM_MAX_NUM_TAKEN_TRANSITIONS 1
+#define FSM_MAX_NUM_TRIGGERS_PER_STATE 1
+#define FSM_MAX_NUM_ACTIVE_AFTER_TRIGGERS 1
+
+#define FSM_PREVIOUS_TRIGGER_VALUES_OFFSET 1
+#define FSM_AFTER_TRIGGER_TIMESTAMPS_OFFSET FSM_PREVIOUS_TRIGGER_VALUES_OFFSET \
+   + FSM_MAX_NUM_TRIGGERS_PER_STATE
+
+#define CurrentState fsm_struct->fsm_discStates[0]
+#define TakenTransition(i) fsm_struct->fsm_takenTransitions[i]
+#define PreviousTriggerValue(i) fsm_struct->fsm_discStates[ \
+      FSM_PREVIOUS_TRIGGER_VALUES_OFFSET + i]
+#define AfterTriggerTimestamp(i) fsm_struct->fsm_discStates[ \
+      FSM_AFTER_TRIGGER_TIMESTAMPS_OFFSET + i]
+#define SamplingFrequency fsm_struct->fsm_samplingFrequency
+#define IsMajorStep fsm_struct->fsm_isMajorTimeStep
+#define CurrentTime fsm_struct->fsm_currentTime
+#define SetErrorMessage(string) { *fsm_struct->fsm_errorStatus = (string); }
+#define SetWarningMessage(string)
+
+/* input variables */
+#define uB (*fsm_struct->fsm_inputs[0][0])
+
+/* internal constants */
+#define Ts fsm_struct->fsm_internalConstants[0]
+
+/* output variables */
+#define led (*fsm_struct->fsm_outputs[0][0])
+#define tx (*fsm_struct->fsm_outputs[1][0])
+#define pT (*fsm_struct->fsm_outputs[2][0])
+
+
+
+static void fsm_checkAfterTriggerOverflow(const struct FSM_Struct *fsm_struct,
+                                          double fsm_value)
+{
+   if (fsm_value - (fsm_value - 1.0) != 1.0)
+   {
+      SetErrorMessage("Error: AFTER trigger expression overflow.");
+   }
+}
+
+
+
+static void fsm_state_IDLE_EnterAction(const struct FSM_Struct* fsm_struct)
+{
+   led = 0;
+}
+
+static void fsm_state_LEDON_EnterAction(const struct FSM_Struct* fsm_struct)
+{
+   led = 1;
+   pT = 0;
+}
+
+static void fsm_state_LEDBLINK_EnterAction(const struct FSM_Struct* fsm_struct)
+{
+   // Logisches XOR
+   led = (led || 1) && !(led && 1);
+}
+
+
+static void fsm_state_IDLE_DuringAction(const struct FSM_Struct* fsm_struct)
+{
+   tx = 0;
+}
+
+static void fsm_state_LEDON_DuringAction(const struct FSM_Struct* fsm_struct)
+{
+   if(uB)
+   {
+      pT = pT + Ts;
+   }
+   else
+   {
+      pT = 0;
+   }
+   tx = 182;
+}
+
+static void fsm_state_LEDBLINK_DuringAction(
+                                            const struct FSM_Struct* fsm_struct)
+{
+   if(uB)
+   {
+      pT = pT + Ts;
+   }
+   tx = 162;
+}
+
+
+static void fsm_state_LEDON_ExitAction(const struct FSM_Struct* fsm_struct)
+{
+   pT = 0;
+   tx = 0;
+}
+
+
+static void fsm_transition_LEDON_2_Action(const struct FSM_Struct* fsm_struct)
+{
+   pT = 0;
+}
+
+
+
+void Subsystem_0_fsm_start(const struct FSM_Struct *fsm_struct)
+{
+   int fsm_i;
+   CurrentState = FSM_STATE_NONE;
+   for (fsm_i = 0; fsm_i < FSM_MAX_NUM_TAKEN_TRANSITIONS; fsm_i++)
+   {
+      TakenTransition(fsm_i) = FSM_TRANSITION_NONE;
+   }
+   for (fsm_i = 0; fsm_i < FSM_MAX_NUM_TRIGGERS_PER_STATE; fsm_i++)
+   {
+      PreviousTriggerValue(fsm_i) = 0;
+   }
+   for (fsm_i = 0; fsm_i < FSM_MAX_NUM_ACTIVE_AFTER_TRIGGERS; fsm_i++)
+   {
+      AfterTriggerTimestamp(fsm_i) = FLT_MAX;
+   }
+}
+
+void Subsystem_0_fsm_output(const struct FSM_Struct *fsm_struct)
+{
+   if (IsMajorStep)
+   {
+      int fsm_numActiveAfterTriggers = 0;
+      int fsm_i;
+      for (fsm_i = 0; fsm_i < FSM_MAX_NUM_TAKEN_TRANSITIONS; fsm_i++)
+      {
+         TakenTransition(fsm_i) = FSM_TRANSITION_NONE;
+      }
+      switch ((int)CurrentState)
+      {
+      case FSM_STATE_IDLE:
+         if (uB && !PreviousTriggerValue(0))
+         {
+            TakenTransition(0) = FSM_TRANSITION_IDLE_1;
+            fsm_state_LEDON_EnterAction(fsm_struct);
+            CurrentState = FSM_STATE_LEDON;
+         }
+         else
+         {
+            fsm_state_IDLE_DuringAction(fsm_struct);
+         }
+         break;
+
+      case FSM_STATE_LEDON:
+         if (uB && !PreviousTriggerValue(0))
+         {
+            fsm_state_LEDON_ExitAction(fsm_struct);
+            TakenTransition(0) = FSM_TRANSITION_LEDON_1;
+            fsm_state_LEDBLINK_EnterAction(fsm_struct);
+            AfterTriggerTimestamp(0) = ceil((1) * SamplingFrequency);
+            fsm_checkAfterTriggerOverflow(fsm_struct,
+                                          AfterTriggerTimestamp(0));
+            CurrentState = FSM_STATE_LEDBLINK;
+         }
+         else if (pT > 1)
+         {
+            fsm_state_LEDON_ExitAction(fsm_struct);
+            fsm_transition_LEDON_2_Action(fsm_struct);
+            TakenTransition(0) = FSM_TRANSITION_LEDON_2;
+            fsm_state_IDLE_EnterAction(fsm_struct);
+            CurrentState = FSM_STATE_IDLE;
+         }
+         else
+         {
+            fsm_state_LEDON_DuringAction(fsm_struct);
+         }
+         break;
+
+      case FSM_STATE_LEDBLINK:
+         if ((AfterTriggerTimestamp(0) <= 0) && !PreviousTriggerValue(0))
+         {
+            TakenTransition(0) = FSM_TRANSITION_LEDBLINK_1;
+            fsm_state_LEDBLINK_EnterAction(fsm_struct);
+            AfterTriggerTimestamp(0) = ceil((1) * SamplingFrequency);
+            fsm_checkAfterTriggerOverflow(fsm_struct,
+                                          AfterTriggerTimestamp(0));
+            CurrentState = FSM_STATE_LEDBLINK;
+         }
+         else if (pT > 1)
+         {
+            TakenTransition(0) = FSM_TRANSITION_LEDBLINK_2;
+            fsm_state_IDLE_EnterAction(fsm_struct);
+            CurrentState = FSM_STATE_IDLE;
+         }
+         else
+         {
+            fsm_state_LEDBLINK_DuringAction(fsm_struct);
+         }
+         break;
+
+      default:
+         TakenTransition(0) = FSM_INITIAL_TRANSITION;
+         fsm_state_IDLE_EnterAction(fsm_struct);
+         CurrentState = FSM_STATE_IDLE;
+         break;
+      }
+      switch ((int)CurrentState)
+      {
+      case FSM_STATE_IDLE:
+         PreviousTriggerValue(0) = (uB);
+         break;
+
+      case FSM_STATE_LEDON:
+         PreviousTriggerValue(0) = (uB);
+         break;
+
+      case FSM_STATE_LEDBLINK:
+         PreviousTriggerValue(0) = (AfterTriggerTimestamp(0) <= 0);
+         fsm_numActiveAfterTriggers = 1;
+         break;
+
+      default:
+         break;
+      }
+      for (fsm_i = 0; fsm_i < fsm_numActiveAfterTriggers; fsm_i++)
+      {
+         --AfterTriggerTimestamp(fsm_i);
+      }
+   }
+}
+

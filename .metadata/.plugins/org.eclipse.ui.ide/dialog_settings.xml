@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="ExternalProjectImportWizard">
+		<item key="WizardProjectsImportPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="WizardProjectsImportPage.STORE_COPY_PROJECT_ID" value="true"/>
+		<item key="WizardProjectsImportPage.STORE_ARCHIVE_SELECTED" value="true"/>
+		<item key="WizardProjectsImportPage.STORE_CLOSE_CREATED_PROJECTS_ID" value="false"/>
+		<item key="WizardProjectsImportPage.STORE_HIDE_CONFLICTING_PROJECTS_ID" value="false"/>
+		<list key="WizardProjectsImportPage.STORE_DIRECTORIES">
+			<item value=""/>
+			<item value="C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\02_Plecs_Test"/>
+			<item value="C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.14.1\Display_Test"/>
+		</list>
+		<list key="WizardProjectsImportPage.STORE_ARCHIVES">
+			<item value="C:\Users\raphael.baumeler\Plecs\Coder Targets\tsp_stm32_1.4.3\projects\g474.zip"/>
+			<item value=""/>
+		</list>
+	</section>
+	<section name="SmartImportWizard">
+		<item key="SmartImportRootWizardPage.STORE_HIDE_ALREADY_OPEN" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_CLOSE_IMPORTED" value="false"/>
+		<item key="SmartImportRootWizardPage.STORE_NESTED_PROJECTS" value="true"/>
+		<item key="SmartImportRootWizardPage.STORE_CONFIGURE_NATURES" value="true"/>
+		<list key="org.eclipse.ui.internal.wizards.datatransfer.SmartImportRootWizardPage.knownSources">
+			<item value="C:\Users\raphael.baumeler\OneDrive - OST\MSE\4.Semester\Projektarbeit2\Support\STM32"/>
+			<item value="C:\Users\raphael.baumeler\Plecs\Coder Targets\tsp_stm32_1.4.3\projects\g474.zip"/>
+			<item value="C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\Display_Test"/>
+			<item value="C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1"/>
+			<item value="C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\00_Display_Test"/>
+		</list>
+	</section>
+	<section name="org.eclipse.text.quicksearch.internal.ui.QuickSearchDialog.DIALOG_SETTINGS">
+		<item key="LAST_QUERY" value="SystemCoreClock"/>
+		<item key="PATH_FILTER" value=""/>
+		<item key="CASE_SENSITIVE" value="true"/>
+		<item key="KEEP_OPEN" value="false"/>
+		<list key="COLUMN_WIDTHS">
+			<item value="40"/>
+			<item value="497"/>
+			<item value="777"/>
+		</list>
+		<list key="SASH_WEIGHTS">
+			<item value="714"/>
+			<item value="285"/>
+		</list>
+		<section name="DialogBoundsSettings">
+			<item key="DIALOG_HEIGHT" value="909"/>
+			<item key="DIALOG_WIDTH" value="1373"/>
+			<item key="DIALOG_X_ORIGIN" value="2128"/>
+			<item key="DIALOG_Y_ORIGIN" value="50"/>
+			<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
+		</section>
+	</section>
+</section>

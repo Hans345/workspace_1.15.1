@@ -1,0 +1,39 @@
+#ifndef __TASK_HANDLER_H__
+#define __TASK_HANDLER_H__
+
+//-----------------------------------------------------------------------------------------------------------------------
+/****** Includes ******/
+#include <stdint.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include "task_handler.h"
+#include "stm32g4xx_hal_gpio.h"
+
+//-----------------------------------------------------------------------------------------------------------------------
+/****** States ******/
+enum{
+    IDLE,
+    LEDON,
+    LEDBLINK
+};
+
+//-----------------------------------------------------------------------------------------------------------------------
+/****** PIN DEFINES ******/
+#define B1 GPIOC
+#define B1_PIN  GPIO_PIN_13
+#define LD2 GPIOA
+#define LD2_PIN  GPIO_PIN_5
+
+//-----------------------------------------------------------------------------------------------------------------------
+
+extern uint8_t handler_state;
+
+//-----------------------------------------------------------------------------------------------------------------------
+
+void set_handler_state(uint8_t state);
+uint8_t get_handler_state(void);
+void handler_task(void);
+void handler_rt_task(void);
+void set_handler_timeout(uint32_t handler_time);
+
+#endif // __TASK_HANDLER_H__

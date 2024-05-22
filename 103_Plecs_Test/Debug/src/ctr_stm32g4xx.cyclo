@@ -1,0 +1,3 @@
+../src/ctr_stm32g4xx.c:24:6:PLX_CTR_sinit	2
+../src/ctr_stm32g4xx.c:42:18:PLX_CTR_init	1
+../src/ctr_stm32g4xx.c:55:6:PLX_CTR_setup	9

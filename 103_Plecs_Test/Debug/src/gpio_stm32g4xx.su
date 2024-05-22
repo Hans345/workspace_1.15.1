@@ -1,0 +1,3 @@
+../src/gpio_stm32g4xx.c:22:6:PLX_GPIO_sinit	32	static
+../src/gpio_stm32g4xx.c:44:6:PLX_GPIO_setGpioConfig	0	static,ignoring_inline_asm
+../src/gpio_stm32g4xx.c:49:15:PLX_GPIO_getBase	0	static,ignoring_inline_asm

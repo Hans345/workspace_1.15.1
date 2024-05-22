@@ -1,0 +1,42 @@
+/*
+   Copyright (c) 2021 by Plexim GmbH
+   All rights reserved.
+
+   A free license is granted to anyone to use this software for any legal
+   non safety-critical purpose, including commercial applications, provided
+   that:
+   1) IT IS NOT USED TO DIRECTLY OR INDIRECTLY COMPETE WITH PLEXIM, and
+   2) THIS COPYRIGHT NOTICE IS PRESERVED in its entirety.
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+   SOFTWARE.
+ */
+
+#ifndef PLX_COMP_IMPL_H_
+#define PLX_COMP_IMPL_H_
+
+#include "stm32g4xx_ll_comp.h"
+
+typedef enum PLX_COMP_UNIT {
+	PLX_COMP1 = 0,
+  PLX_COMP2,
+  PLX_COMP3,
+  PLX_COMP4,
+  PLX_COMP5,
+  PLX_COMP6,
+  PLX_COMP7,
+} PLX_COMP_Unit_t;
+
+typedef struct PLX_COMP_OBJ
+{
+  COMP_TypeDef *instance;
+} PLX_COMP_Obj_t;
+
+typedef PLX_COMP_Obj_t *PLX_COMP_Handle_t;
+
+#endif /* PLX_COMP_IMPL_H_ */

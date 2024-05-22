@@ -1,0 +1,5 @@
+../src/trig_stm32g4xx.c:27:6:PLX_TRIG_sinit	1
+../src/trig_stm32g4xx.c:40:19:PLX_TRIG_init	1
+../src/trig_stm32g4xx.c:55:6:PLX_TRIG_updateAngle	2
+../src/trig_stm32g4xx.c:71:7:PLX_TRIG_getSin	1
+../src/trig_stm32g4xx.c:77:7:PLX_TRIG_getCos	1

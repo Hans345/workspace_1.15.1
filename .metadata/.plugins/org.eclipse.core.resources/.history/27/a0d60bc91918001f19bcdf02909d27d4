@@ -1,0 +1,3 @@
+../system/driver/src/stm32g4xx_ll_dac.c:216:13:LL_DAC_DeInit	0	static
+../system/driver/src/stm32g4xx_ll_dac.c:293:13:LL_DAC_Init	16	static
+../system/driver/src/stm32g4xx_ll_dac.c:394:6:LL_DAC_StructInit	0	static

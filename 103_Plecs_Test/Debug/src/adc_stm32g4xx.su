@@ -1,0 +1,6 @@
+../src/adc_stm32g4xx.c:32:6:PLX_ADC_sinit	40	static
+../src/adc_stm32g4xx.c:60:18:PLX_ADC_init	0	static
+../src/adc_stm32g4xx.c:73:6:PLX_ADC_setup	40	static,ignoring_inline_asm
+../src/adc_stm32g4xx.c:142:6:PLX_ADC_addChannel	0	static
+../src/adc_stm32g4xx.c:150:6:PLX_ADC_addInjectedChannel	0	static
+../src/adc_stm32g4xx.c:158:6:PLX_ADC_start	40	static

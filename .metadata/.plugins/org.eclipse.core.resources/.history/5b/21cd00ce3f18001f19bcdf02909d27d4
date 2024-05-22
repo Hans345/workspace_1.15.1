@@ -1,0 +1,8 @@
+../Core/Src/task_handler.c:14:6:enter_handler_state	5
+../Core/Src/task_handler.c:38:6:exec_handler_state	3
+../Core/Src/task_handler.c:58:6:leave_handler_state	5
+../Core/Src/task_handler.c:79:6:handler_rt_task	2
+../Core/Src/task_handler.c:86:6:handler_task	1
+../Core/Src/task_handler.c:91:6:set_handler_state	1
+../Core/Src/task_handler.c:99:9:get_handler_state	1
+../Core/Src/task_handler.c:105:6:set_handler_timeout	1

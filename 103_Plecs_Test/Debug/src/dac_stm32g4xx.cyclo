@@ -1,0 +1,6 @@
+../src/dac_stm32g4xx.c:33:6:PLX_DAC_sinit	1
+../src/dac_stm32g4xx.c:50:18:PLX_DAC_init	2
+../src/dac_stm32g4xx.c:68:6:PLX_DAC_setup	5
+../src/dac_stm32g4xx.c:99:6:PLX_DAC_configureChannel	2
+../src/dac_stm32g4xx.c:109:6:PLX_DAC_activate	3
+../src/dac_stm32g4xx.c:123:6:PLX_DAC_setOut	4

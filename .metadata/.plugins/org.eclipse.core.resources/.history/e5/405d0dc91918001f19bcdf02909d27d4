@@ -1,0 +1,7 @@
+../system/driver/src/stm32g4xx_ll_spi.c:134:13:LL_SPI_DeInit	0	static
+../system/driver/src/stm32g4xx_ll_spi.c:201:13:LL_SPI_Init	8	static
+../system/driver/src/stm32g4xx_ll_spi.c:273:6:LL_SPI_StructInit	0	static
+../system/driver/src/stm32g4xx_ll_spi.c:377:13:LL_I2S_DeInit	0	static
+../system/driver/src/stm32g4xx_ll_spi.c:392:13:LL_I2S_Init	16	static
+../system/driver/src/stm32g4xx_ll_spi.c:499:6:LL_I2S_StructInit	0	static
+../system/driver/src/stm32g4xx_ll_spi.c:521:6:LL_I2S_ConfigPrescaler	0	static

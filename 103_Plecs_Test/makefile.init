@@ -1,0 +1,5 @@
+-include ../cg/cg.mk
+
+allcg: all
+	@echo Copy binary to codegen folder:
+	cp "$(BUILD_ARTIFACT)" "$(BUILD_ROOT)/$(BASE_NAME).elf"

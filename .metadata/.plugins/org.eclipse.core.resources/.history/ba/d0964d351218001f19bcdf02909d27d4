@@ -1,0 +1,9 @@
+../src/power.c:45:6:PLX_PWR_sinit	0	static
+../src/power.c:52:6:PLX_PWR_configure	0	static
+../src/power.c:70:6:PLX_PWR_registerPwm	0	static,ignoring_inline_asm
+../src/power.c:80:6:PLX_PWR_registerHrtim	0	static,ignoring_inline_asm
+../src/power.c:100:6:PLX_PWR_isReadyForEnable	0	static,ignoring_inline_asm
+../src/power.c:110:6:PLX_PWR_setEnableRequest	0	static,ignoring_inline_asm
+../src/power.c:119:6:PLX_PWR_isEnabled	0	static,ignoring_inline_asm
+../src/power.c:128:6:PLX_PWR_setPilMode	0	static,ignoring_inline_asm
+../src/power.c:137:6:PLX_PWR_runFsm	24	static,ignoring_inline_asm

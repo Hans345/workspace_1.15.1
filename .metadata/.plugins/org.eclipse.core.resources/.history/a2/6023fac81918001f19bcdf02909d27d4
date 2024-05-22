@@ -1,0 +1,15 @@
+../src/dispatcher_stm32g4xx.c:50:6:DISPR_sinit	1
+../src/dispatcher_stm32g4xx.c:61:6:DISPR_configure	4
+../src/dispatcher_stm32g4xx.c:80:6:DISPR_registerIdleTask	1
+../src/dispatcher_stm32g4xx.c:86:6:DISPR_registerSyncCallback	1
+../src/dispatcher_stm32g4xx.c:92:6:DISPR_registerEnableInterrupt	1
+../src/dispatcher_stm32g4xx.c:98:6:DISPR_setPowerupDelay	1
+../src/dispatcher_stm32g4xx.c:104:6:DISPR_reset	3
+../src/dispatcher_stm32g4xx.c:115:6:DISPR_registerTask	5
+../src/dispatcher_stm32g4xx.c:236:6:DISPR_start	10
+../src/dispatcher_stm32g4xx.c:296:6:DISPR_sampleScopes	2
+../src/dispatcher_stm32g4xx.c:306:6:DISPR_dispatch	8
+../src/dispatcher_stm32g4xx.c:383:19:HAL_InitTick	2
+../src/dispatcher_stm32g4xx.c:417:6:HAL_SuspendTick	1
+../src/dispatcher_stm32g4xx.c:423:6:HAL_ResumeTick	1
+../src/dispatcher_stm32g4xx.c:433:6:TIM7_DAC_IRQHandler	3
