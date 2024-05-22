@@ -1,2 +1,0 @@
-../cg/Subsystem_main.c:47:5:main	72	static,ignoring_inline_asm
-../cg/Subsystem_main.c:193:6:Error_Handler	0	static,ignoring_inline_asm

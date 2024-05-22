@@ -1,3 +1,0 @@
-../system/driver/src/stm32g4xx_ll_comp.c:252:13:LL_COMP_DeInit	0	static
-../system/driver/src/stm32g4xx_ll_comp.c:289:13:LL_COMP_Init	4	static
-../system/driver/src/stm32g4xx_ll_comp.c:343:6:LL_COMP_StructInit	0	static

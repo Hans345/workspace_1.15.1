@@ -1,3 +1,0 @@
-../src/uart_stm32g4xx.c:22:19:PLX_UART_init	1
-../src/uart_stm32g4xx.c:32:6:PLX_UART_configure	1
-../src/uart_stm32g4xx.c:38:6:PLX_UART_setupPort	6

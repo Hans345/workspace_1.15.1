@@ -1,3 +1,0 @@
-../src/dio_stm32g4xx.c:22:18:PLX_DIO_init	0	static
-../src/dio_stm32g4xx.c:35:6:PLX_DIO_configureIn	16	static
-../src/dio_stm32g4xx.c:44:6:PLX_DIO_configureOut	16	static

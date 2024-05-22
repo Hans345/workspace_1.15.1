@@ -30,14 +30,14 @@
 		</list>
 	</section>
 	<section name="org.eclipse.text.quicksearch.internal.ui.QuickSearchDialog.DIALOG_SETTINGS">
-		<item key="LAST_QUERY" value="SystemCoreClock"/>
+		<item key="LAST_QUERY" value="SpiMasterTxData"/>
 		<item key="PATH_FILTER" value=""/>
 		<item key="CASE_SENSITIVE" value="true"/>
 		<item key="KEEP_OPEN" value="false"/>
 		<list key="COLUMN_WIDTHS">
 			<item value="40"/>
-			<item value="497"/>
-			<item value="777"/>
+			<item value="747"/>
+			<item value="769"/>
 		</list>
 		<list key="SASH_WEIGHTS">
 			<item value="714"/>
@@ -45,9 +45,9 @@
 		</list>
 		<section name="DialogBoundsSettings">
 			<item key="DIALOG_HEIGHT" value="909"/>
-			<item key="DIALOG_WIDTH" value="1373"/>
-			<item key="DIALOG_X_ORIGIN" value="2128"/>
-			<item key="DIALOG_Y_ORIGIN" value="50"/>
+			<item key="DIALOG_WIDTH" value="1598"/>
+			<item key="DIALOG_X_ORIGIN" value="1962"/>
+			<item key="DIALOG_Y_ORIGIN" value="139"/>
 			<item key="DIALOG_FONT_NAME" value="1|Segoe UI|9.0|0|WINDOWS|1|-12|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI"/>
 		</section>
 	</section>

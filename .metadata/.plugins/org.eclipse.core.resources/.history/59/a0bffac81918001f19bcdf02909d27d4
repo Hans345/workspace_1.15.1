@@ -1,5 +1,0 @@
-src/fonts.o: ../src/fonts.c \
- C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/cg/plx_defines.h \
- C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/inc/fonts.h
-C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/cg/plx_defines.h:
-C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/inc/fonts.h:

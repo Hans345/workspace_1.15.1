@@ -1,9 +1,0 @@
-../cg/Subsystem_hal.c:170:6:Subsystem_syncTimers	1
-../cg/Subsystem_hal.c:176:6:Subsystem_background	1
-../cg/Subsystem_hal.c:161:6:Subsystem_enableTasksInterrupt	1
-../cg/Subsystem_hal.c:149:13:Tasks	1
-../cg/Subsystem_hal.c:117:6:PLXHAL_DIO_get	2
-../cg/Subsystem_hal.c:123:6:PLXHAL_DIO_set	4
-../cg/Subsystem_hal.c:129:6:TIM3_IRQHandler	2
-../cg/Subsystem_hal.c:138:6:Subsystem_checkOverrun	1
-../cg/Subsystem_hal.c:182:6:Subsystem_initHal	6

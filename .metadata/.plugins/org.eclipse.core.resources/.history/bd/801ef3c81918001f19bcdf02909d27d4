@@ -1,3 +1,0 @@
-../cg/Subsystem.c:87:6:Subsystem_initialize	16	static
-../cg/Subsystem.c:137:6:Subsystem_step	24	static
-../cg/Subsystem.c:181:6:Subsystem_terminate	0	static

@@ -1,6 +1,0 @@
-../src/adc_stm32g4xx.c:32:6:PLX_ADC_sinit	1
-../src/adc_stm32g4xx.c:60:18:PLX_ADC_init	1
-../src/adc_stm32g4xx.c:73:6:PLX_ADC_setup	6
-../src/adc_stm32g4xx.c:142:6:PLX_ADC_addChannel	1
-../src/adc_stm32g4xx.c:150:6:PLX_ADC_addInjectedChannel	1
-../src/adc_stm32g4xx.c:158:6:PLX_ADC_start	16

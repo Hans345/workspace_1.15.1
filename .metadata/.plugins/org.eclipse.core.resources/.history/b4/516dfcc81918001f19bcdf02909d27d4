@@ -1,9 +1,0 @@
-../src/power.c:45:6:PLX_PWR_sinit	1
-../src/power.c:52:6:PLX_PWR_configure	1
-../src/power.c:70:6:PLX_PWR_registerPwm	2
-../src/power.c:80:6:PLX_PWR_registerHrtim	2
-../src/power.c:100:6:PLX_PWR_isReadyForEnable	1
-../src/power.c:110:6:PLX_PWR_setEnableRequest	1
-../src/power.c:119:6:PLX_PWR_isEnabled	1
-../src/power.c:128:6:PLX_PWR_setPilMode	1
-../src/power.c:137:6:PLX_PWR_runFsm	31

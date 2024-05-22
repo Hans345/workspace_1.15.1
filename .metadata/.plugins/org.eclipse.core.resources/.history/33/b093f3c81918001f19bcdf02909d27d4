@@ -1,3 +1,0 @@
-cg/Subsystem_0.o: ../cg/Subsystem_0.c \
- C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/cg/plx_defines.h
-C:/Users/raphael.baumeler/STM32CubeIDE/workspace_1.15.1/03_StateMachine_Test/cg/plx_defines.h:

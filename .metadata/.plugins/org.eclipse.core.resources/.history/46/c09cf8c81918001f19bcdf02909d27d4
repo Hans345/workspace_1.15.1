@@ -1,3 +1,0 @@
-../src/comp_stm32g4xx.c:24:6:PLX_COMP_sinit	1
-../src/comp_stm32g4xx.c:29:19:PLX_COMP_init	1
-../src/comp_stm32g4xx.c:42:6:PLX_COMP_setup	8

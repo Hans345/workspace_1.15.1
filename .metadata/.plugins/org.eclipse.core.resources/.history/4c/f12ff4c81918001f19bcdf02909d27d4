@@ -1,9 +1,0 @@
-../cg/Subsystem_hal.c:170:6:Subsystem_syncTimers	0	static
-../cg/Subsystem_hal.c:176:6:Subsystem_background	0	static
-../cg/Subsystem_hal.c:161:6:Subsystem_enableTasksInterrupt	8	static
-../cg/Subsystem_hal.c:149:13:Tasks	8	static
-../cg/Subsystem_hal.c:117:6:PLXHAL_DIO_get	0	static
-../cg/Subsystem_hal.c:123:6:PLXHAL_DIO_set	0	static
-../cg/Subsystem_hal.c:129:6:TIM3_IRQHandler	8	static
-../cg/Subsystem_hal.c:138:6:Subsystem_checkOverrun	8	static
-../cg/Subsystem_hal.c:182:6:Subsystem_initHal	112	static,ignoring_inline_asm
