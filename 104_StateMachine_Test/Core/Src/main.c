@@ -23,7 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "ST7735.h"
 #include "GFX_FUNCTIONS.h"
-#include "task_handler.h"
+//#include "task_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -62,11 +62,29 @@ static void MX_TIM16_Init(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
 /****** Interrupts ******/
+// GPIO Callback
+// Diese Callback Funktion wird beim drücken des Taster B1 aufgerufen
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	set_handler_state(LEDON);
+	set_handler_state();
 }
+
+// Timer Callback
+// Diese Callback Funktion wird immer nach erreichen des Timer maximums aufgerufen
+void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	// Überprüfe welcher Timer diese callback Funktion aufruft
+	if(htim == &htim16)
+	{
+		// Toggle PA13 alle 100ms
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
+		// Handler Zeit um 100ms erhöhen
+		set_handler_currentTime(100);
+	}
+}
+
 /* USER CODE END 0 */
 
 /**
@@ -108,6 +126,9 @@ int main(void)
   ST7735_Init(0);
   fillScreen(BLACK);
 
+  /****** Timers ******/
+  HAL_TIM_Base_Start_IT(&htim16); // Starte Timer 16 im Interrupt Modus
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -119,6 +140,9 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  // StateMachine
 	  handler_task();
+	  fillScreen(BLACK);
+	  HAL_Delay(100);
+	  fillScreen(GREEN);
 	  /*ST7735_WriteString(0, 0, "Hello World", Font_11x18, GREEN, BLACK);
 	  ST7735_WriteString(0, 18, "Hello World", Font_11x18, GREEN, BLACK);
 	  ST7735_WriteString(0, 36, "Hello World", Font_11x18, GREEN, BLACK);
@@ -140,17 +164,18 @@ void SystemClock_Config(void)
 
   /** Configure the main internal regulator output voltage
   */
-  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1_BOOST);
+  HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1);
 
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV3;
-  RCC_OscInitStruct.PLL.PLLN = 20;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+  RCC_OscInitStruct.PLL.PLLM = RCC_PLLM_DIV4;
+  RCC_OscInitStruct.PLL.PLLN = 75;
   RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
   RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
   RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
@@ -230,9 +255,9 @@ static void MX_TIM16_Init(void)
 
   /* USER CODE END TIM16_Init 1 */
   htim16.Instance = TIM16;
-  htim16.Init.Prescaler = 16000 - 1;
+  htim16.Init.Prescaler = 15000 - 1;
   htim16.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim16.Init.Period = 60000;
+  htim16.Init.Period = 1000;
   htim16.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim16.Init.RepetitionCounter = 0;
   htim16.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
@@ -281,6 +306,9 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
@@ -290,6 +318,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pin = GPIO_PIN_13;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA5 PA6 PA15 */

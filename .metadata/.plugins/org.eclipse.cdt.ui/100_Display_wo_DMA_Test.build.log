@@ -1,4 +1,4 @@
-15:38:19 **** Incremental Build of configuration Debug for project 100_Display_wo_DMA_Test ****
+11:34:34 **** Incremental Build of configuration Debug for project 100_Display_wo_DMA_Test ****
 make -j8 all 
 arm-none-eabi-size  100_Display_wo_DMA_Test.elf 
    text	   data	    bss	    dec	    hex	filename
@@ -6,5 +6,5 @@ arm-none-eabi-size  100_Display_wo_DMA_Test.elf
 Finished building: default.size.stdout
  
 
-15:38:19 Build Finished. 0 errors, 0 warnings. (took 302ms)
+11:34:35 Build Finished. 0 errors, 0 warnings. (took 617ms)
 

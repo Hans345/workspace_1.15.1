@@ -1,29 +1,22 @@
 #include "task_handler.h"
 
 
-uint8_t handler_state, prev_handler_state;
-uint32_t handler_timeout;
-uint32_t cycle_counter;
-
 //-----------------------------------------------------------------------------------------------------------------------
 /****** VARIABLES ******/
 uint16_t time_val = 0;
-uint16_t dT = 0;
+static int handler_state;
+static int prev_handler_state;
 
-void enter_handler_state(uint8_t state)
+void enter_handler_state(int state)
 {
     switch(state){
     //--------------------------------------------------------------------------------------
         case IDLE:
-
+			/****** LED2 ******/
+        	HAL_GPIO_WritePin(LD2, LD2_PIN, GPIO_PIN_RESET);
         break;
     //--------------------------------------------------------------------------------------
         case LEDON:
-			/****** Timer ******/
-			// Start Timer
-			HAL_TIM_Base_Start(&htim16);
-			// Get current time
-			time_val = __HAL_TIM_GET_COUNTER(&htim16);
 			/****** LED2 ******/
         	HAL_GPIO_WritePin(LD2, LD2_PIN, GPIO_PIN_SET);
         break;
@@ -40,7 +33,7 @@ void enter_handler_state(uint8_t state)
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-void exec_handler_state(uint8_t state)
+void exec_handler_state(int state)
 {
     switch(state){
     //--------------------------------------------------------------------------------------
@@ -49,19 +42,27 @@ void exec_handler_state(uint8_t state)
         break;
     //--------------------------------------------------------------------------------------
         case LEDON:
-		if(HAL_GPIO_ReadPin(B1, B1_PIN))
-		{
-			dT = __HAL_TIM_GET_COUNTER(&htim16) - time_val; // 100us
-			time_val = __HAL_TIM_GET_COUNTER(&htim16);
-			if(time_val > 10000)
+        	// LEDON -> IDLE
+			if(HAL_GPIO_ReadPin(B1, B1_PIN) && time_val > 1000)
 			{
 				set_handler_state(IDLE);
 			}
-		}
+			// LEDON -> LEDBlink
+			// B1 Interrupt
         break;
     //--------------------------------------------------------------------------------------
         case LEDBLINK:
-
+        	// LEDON -> IDLE
+			if(HAL_GPIO_ReadPin(B1, B1_PIN) && time_val > 1000)
+			{
+				set_handler_state(IDLE);
+			}
+			// LEDBLINK
+			else if (time_val > 1000)
+			{
+				HAL_GPIO_TogglePin(LD2, LD2_PIN);
+				time_val = 0;
+			}
         break;
       //--------------------------------------------------------------------------------------
       default:
@@ -72,7 +73,7 @@ void exec_handler_state(uint8_t state)
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-void leave_handler_state(uint8_t state)
+void leave_handler_state(int state)
 {
     switch(state){
     //--------------------------------------------------------------------------------------
@@ -93,24 +94,32 @@ void leave_handler_state(uint8_t state)
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-void handler_rt_task(void)
-{
-    if(handler_timeout > 0){
-        handler_timeout--;
-    }
-}
-
 void handler_task(void)
 {
     exec_handler_state(handler_state);
 }
 
-void set_handler_state(uint8_t state)
+void set_handler_state(int state)
 {
     prev_handler_state = handler_state;
     handler_state = state;
     leave_handler_state(prev_handler_state);
     enter_handler_state(state);
+}
+
+void increase_handler_state(void)
+{
+	if(handler_state <= LEDON)
+	{
+	    prev_handler_state = handler_state;
+	    handler_state = handler_state + 1;
+	    leave_handler_state(prev_handler_state);
+	    enter_handler_state(handler_state);
+	}
+	else
+	{
+		// Nichts tun
+	}
 }
 
 uint8_t get_handler_state(void)
@@ -119,8 +128,8 @@ uint8_t get_handler_state(void)
 }
 
 
-void set_handler_timeout(uint32_t timeout)
+void set_handler_currentTime(uint16_t dT)
 {
-    handler_timeout = timeout;
+    time_val = time_val + dT;
 }
 

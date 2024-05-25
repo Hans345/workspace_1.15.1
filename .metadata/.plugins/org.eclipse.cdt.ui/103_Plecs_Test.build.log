@@ -1,4 +1,4 @@
-13:38:25 **** Incremental Build of configuration Debug for project 103_Plecs_Test ****
+11:33:45 **** Incremental Build of configuration Debug for project 103_Plecs_Test ****
 make -j8 allcg 
 arm-none-eabi-size  103_Plecs_Test.elf 
    text	   data	    bss	    dec	    hex	filename
@@ -8,5 +8,5 @@ Finished building: default.size.stdout
 Copy binary to codegen folder:
 cp "103_Plecs_Test.elf" "C:/Users/raphael.baumeler/OneDrive - OST/MSE/4.Semester/Projektarbeit2/PLECS\STM32_Plecs_Test_codegen/Subsystem.elf"
 
-13:38:25 Build Finished. 0 errors, 0 warnings. (took 843ms)
+11:33:47 Build Finished. 0 errors, 0 warnings. (took 1s.201ms)
 

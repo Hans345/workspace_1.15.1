@@ -98,3 +98,4 @@
 1716385282961	Delete resource '104_StateMachine_Test/100_Display_wo_DMA_Test.launch'
 1716387391405	Delete resource '104_StateMachine_Test/Core/Inc/task_handler.h'
 1716387393590	Delete resource '104_StateMachine_Test/Core/Src/task_handler.c'
+1716628275550	Delete resource '104_StateMachine_Test/Debug'

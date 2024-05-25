@@ -16,22 +16,17 @@
 //-----------------------------------------------------------------------------------------------------------------------
 
 enum{
-    IDLE,
-	LEDOFF,
+    IDLE = 0,
     LEDON,
     LEDBLINK
 };
 
 //-----------------------------------------------------------------------------------------------------------------------
 
-extern uint8_t handler_state;
-
-//-----------------------------------------------------------------------------------------------------------------------
-
-void set_handler_state(uint8_t state);
-uint8_t get_handler_state(void);
 void handler_task(void);
-void handler_rt_task(void);
-void set_handler_timeout(uint32_t handler_time);
+void set_handler_state(int state);
+void increase_handler_state(void);
+uint8_t get_handler_state(void);
+void set_handler_currentTime(uint16_t dT);
 
 #endif // __TASK_HANDLER_H__
