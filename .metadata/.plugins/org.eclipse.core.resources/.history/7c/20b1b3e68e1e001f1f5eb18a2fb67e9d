@@ -1,0 +1,7 @@
+../Core/Src/task_handler.c:9:6:enter_handler_state	5
+../Core/Src/task_handler.c:45:6:exec_handler_state	6
+../Core/Src/task_handler.c:72:6:leave_handler_state	5
+../Core/Src/task_handler.c:92:6:handler_task	1
+../Core/Src/task_handler.c:96:6:set_handler_state	1
+../Core/Src/task_handler.c:103:9:get_handler_state	1
+../Core/Src/task_handler.c:107:6:inc_handler_currentTime	1

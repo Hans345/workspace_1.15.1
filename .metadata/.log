@@ -155,3 +155,21 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.debug 4 0 2024-05-30 15:52:28.864
 !MESSAGE Existing sessions are:
+!SESSION 2024-05-30 16:02:53.118 -----------------------------------------------
+eclipse.buildId=Version 1.15.1
+java.version=17.0.8.1
+java.vendor=Eclipse Adoptium
+BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=de_CH
+Command-line arguments:  -os win32 -ws win32 -arch x86_64
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 4 4 2024-05-30 16:03:12.110
+!MESSAGE CubeMX plugin appears to be active, Log4j initialization might be too late.
+
+!ENTRY com.st.stm32cube.ide.mcu.informationcenter 1 1 2024-05-30 16:03:12.120
+!MESSAGE Log4j2 initialized with config file C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\.metadata\.log4j2.xml
+
+!ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-05-30 16:03:19.584
+!MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-05-30 16:14:00.538
+!MESSAGE Indexed '105_MOSFET_Test' (27 sources, 121 headers) in 4.82 sec: 13,317 declarations; 70,303 references; 11 unresolved inclusions; 1,407 syntax errors; 1,934 unresolved names (2.3%)
