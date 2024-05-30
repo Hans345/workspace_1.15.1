@@ -4,15 +4,13 @@
  * @file           : main.c
  * @brief          : Main program body
  ******************************************************************************
- * @attention
- *
- * Copyright (c) 2024 STMicroelectronics.
- * All rights reserved.
- *
- * This software is licensed under terms that can be found in the LICENSE file
- * in the root directory of this software component.
- * If no LICENSE file comes with this software, it is provided AS-IS.
- *
+Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
+Im State ON1 sind:
+- NMOS1, NMOS4 = HIGH
+- NMOS2, NMOS3 = LOW
+Im State ON2 sind:
+- NMOS1, NMOS4 = LOW
+- NMOS2, NMOS3 = HIGH
  ******************************************************************************
  */
 /* USER CODE END Header */
