@@ -10,8 +10,8 @@ extern SPI_HandleTypeDef hspi1;
 #define ST7735_SPI_PORT hspi1
 
 /****** DMA DEFINES ******/
-#define WITH_DMA // HAL konfigurieren!
-//#define WITHOUT_DMA
+//#define WITH_DMA // HAL konfigurieren!
+#define WITHOUT_DMA
 
 /****** PIN DEFINES ******/
 #define CS_PORT GPIOA
