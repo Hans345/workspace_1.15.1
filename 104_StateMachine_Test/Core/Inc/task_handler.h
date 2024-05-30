@@ -23,10 +23,14 @@ enum{
 
 //-----------------------------------------------------------------------------------------------------------------------
 
+extern uint8_t handler_state;
+
+//-----------------------------------------------------------------------------------------------------------------------
+
 void handler_task(void);
-void set_handler_state(int state);
+void set_handler_state(uint8_t state);
 void increase_handler_state(void);
 uint8_t get_handler_state(void);
-void set_handler_currentTime(uint16_t dT);
+void inc_handler_currentTime(uint16_t dT);
 
 #endif // __TASK_HANDLER_H__

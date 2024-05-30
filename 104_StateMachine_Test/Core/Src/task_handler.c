@@ -3,9 +3,9 @@
 
 //-----------------------------------------------------------------------------------------------------------------------
 /****** VARIABLES ******/
+uint8_t handler_state;
+uint8_t prev_handler_state;
 uint16_t time_val = 0;
-static int handler_state;
-static int prev_handler_state;
 
 void enter_handler_state(int state)
 {
@@ -14,6 +14,7 @@ void enter_handler_state(int state)
         case IDLE:
 			/****** LED2 ******/
         	HAL_GPIO_WritePin(LD2, LD2_PIN, GPIO_PIN_RESET);
+        	handler_state = IDLE;
         break;
     //--------------------------------------------------------------------------------------
         case LEDON:
@@ -22,7 +23,7 @@ void enter_handler_state(int state)
         break;
     //--------------------------------------------------------------------------------------
         case LEDBLINK:
-
+        	time_val = 0;
         break;
     //--------------------------------------------------------------------------------------
         default:
@@ -42,23 +43,12 @@ void exec_handler_state(int state)
         break;
     //--------------------------------------------------------------------------------------
         case LEDON:
-        	// LEDON -> IDLE
-			if(HAL_GPIO_ReadPin(B1, B1_PIN) && time_val > 1000)
-			{
-				set_handler_state(IDLE);
-			}
-			// LEDON -> LEDBlink
-			// B1 Interrupt
+
         break;
     //--------------------------------------------------------------------------------------
         case LEDBLINK:
-        	// LEDON -> IDLE
-			if(HAL_GPIO_ReadPin(B1, B1_PIN) && time_val > 1000)
-			{
-				set_handler_state(IDLE);
-			}
 			// LEDBLINK
-			else if (time_val > 1000)
+			if (time_val > 1000)
 			{
 				HAL_GPIO_TogglePin(LD2, LD2_PIN);
 				time_val = 0;
@@ -99,27 +89,12 @@ void handler_task(void)
     exec_handler_state(handler_state);
 }
 
-void set_handler_state(int state)
+void set_handler_state(uint8_t state)
 {
     prev_handler_state = handler_state;
     handler_state = state;
     leave_handler_state(prev_handler_state);
     enter_handler_state(state);
-}
-
-void increase_handler_state(void)
-{
-	if(handler_state <= LEDON)
-	{
-	    prev_handler_state = handler_state;
-	    handler_state = handler_state + 1;
-	    leave_handler_state(prev_handler_state);
-	    enter_handler_state(handler_state);
-	}
-	else
-	{
-		// Nichts tun
-	}
 }
 
 uint8_t get_handler_state(void)
@@ -128,8 +103,7 @@ uint8_t get_handler_state(void)
 }
 
 
-void set_handler_currentTime(uint16_t dT)
+void inc_handler_currentTime(uint16_t dT)
 {
     time_val = time_val + dT;
 }
-

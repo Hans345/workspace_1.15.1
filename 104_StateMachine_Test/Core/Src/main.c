@@ -23,7 +23,7 @@
 /* USER CODE BEGIN Includes */
 #include "ST7735.h"
 #include "GFX_FUNCTIONS.h"
-//#include "task_handler.h"
+#include "task_handler.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,6 +45,9 @@ SPI_HandleTypeDef hspi1;
 DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim16;
+TIM_HandleTypeDef htim17;
+
+uint8_t flag = 0;
 
 /* USER CODE BEGIN PV */
 
@@ -56,6 +59,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
+static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -68,7 +72,29 @@ static void MX_TIM16_Init(void);
 // Diese Callback Funktion wird beim drücken des Taster B1 aufgerufen
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
-	set_handler_state();
+	if(handler_state == IDLE && flag == 0)
+	{
+		set_handler_state(LEDON);
+    	// Start Timer 17
+    	HAL_TIM_Base_Start_IT(&htim17);
+	}
+	else if(handler_state == LEDON)
+	{
+		set_handler_state(LEDBLINK);
+    	// Start Timer 17
+    	HAL_TIM_Base_Start_IT(&htim17);
+	}
+	else if(handler_state == LEDBLINK)
+	{
+		set_handler_state(LEDON);
+    	// Start Timer 17
+    	HAL_TIM_Base_Start_IT(&htim17);
+	}
+	else
+	{
+		set_handler_state(IDLE);
+		flag = 0;
+	}
 }
 
 // Timer Callback
@@ -78,10 +104,24 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 	// Überprüfe welcher Timer diese callback Funktion aufruft
 	if(htim == &htim16)
 	{
-		// Toggle PA13 alle 100ms
+		// Toggle PC3 alle 100ms
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 		// Handler Zeit um 100ms erhöhen
-		set_handler_currentTime(100);
+		if(handler_state == LEDBLINK)
+		{
+			inc_handler_currentTime(100);
+		}
+	}
+	else if(htim == &htim17)
+	{
+		if(HAL_GPIO_ReadPin(B1, B1_PIN))
+		{
+			set_handler_state(IDLE);
+			HAL_TIM_Base_Stop_IT(&htim17);
+			flag = 1;
+		}
+		// Toggle PC4 alle 1s
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
 	}
 }
 
@@ -120,6 +160,7 @@ int main(void)
   MX_DMA_Init();
   MX_SPI1_Init();
   MX_TIM16_Init();
+  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
 
   /****** Display ******/
@@ -128,6 +169,9 @@ int main(void)
 
   /****** Timers ******/
   HAL_TIM_Base_Start_IT(&htim16); // Starte Timer 16 im Interrupt Modus
+
+  /****** State Machine ******/
+  set_handler_state(IDLE);
 
   /* USER CODE END 2 */
 
@@ -272,6 +316,38 @@ static void MX_TIM16_Init(void)
 }
 
 /**
+  * @brief TIM17 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM17_Init(void)
+{
+
+  /* USER CODE BEGIN TIM17_Init 0 */
+
+  /* USER CODE END TIM17_Init 0 */
+
+  /* USER CODE BEGIN TIM17_Init 1 */
+
+  /* USER CODE END TIM17_Init 1 */
+  htim17.Instance = TIM17;
+  htim17.Init.Prescaler = 15000 - 1;
+  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim17.Init.Period = 10000;
+  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim17.Init.RepetitionCounter = 0;
+  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM17_Init 2 */
+
+  /* USER CODE END TIM17_Init 2 */
+
+}
+
+/**
   * Enable DMA controller clock
   */
 static void MX_DMA_Init(void)
@@ -306,7 +382,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_4, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_15, GPIO_PIN_RESET);
@@ -320,8 +396,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC3 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  /*Configure GPIO pins : PC3 PC4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
