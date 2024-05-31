@@ -30,7 +30,7 @@
 		</list>
 	</section>
 	<section name="org.eclipse.text.quicksearch.internal.ui.QuickSearchDialog.DIALOG_SETTINGS">
-		<item key="LAST_QUERY" value="HAL_TIM_IRQ"/>
+		<item key="LAST_QUERY" value="LEDON"/>
 		<item key="PATH_FILTER" value=""/>
 		<item key="CASE_SENSITIVE" value="true"/>
 		<item key="KEEP_OPEN" value="false"/>

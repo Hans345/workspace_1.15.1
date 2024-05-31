@@ -57,14 +57,30 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define NMOS2_Pin GPIO_PIN_7
-#define NMOS2_GPIO_Port GPIOA
-#define NMOS4_Pin GPIO_PIN_14
-#define NMOS4_GPIO_Port GPIOB
-#define NMOS1_Pin GPIO_PIN_8
-#define NMOS1_GPIO_Port GPIOA
-#define NMOS3_Pin GPIO_PIN_9
-#define NMOS3_GPIO_Port GPIOA
+#define Stg2_NMOS1_Pin GPIO_PIN_2
+#define Stg2_NMOS1_GPIO_Port GPIOC
+#define Stg1_NMOS2_Pin GPIO_PIN_7
+#define Stg1_NMOS2_GPIO_Port GPIOA
+#define Stg2_NMOS4_Pin GPIO_PIN_5
+#define Stg2_NMOS4_GPIO_Port GPIOC
+#define Stg1_NMOS4_Pin GPIO_PIN_14
+#define Stg1_NMOS4_GPIO_Port GPIOB
+#define Stg3_NMOS1_Pin GPIO_PIN_6
+#define Stg3_NMOS1_GPIO_Port GPIOC
+#define Stg3_NMOS3_Pin GPIO_PIN_7
+#define Stg3_NMOS3_GPIO_Port GPIOC
+#define Stg1_NMOS1_Pin GPIO_PIN_8
+#define Stg1_NMOS1_GPIO_Port GPIOA
+#define Stg1_NMOS3_Pin GPIO_PIN_9
+#define Stg1_NMOS3_GPIO_Port GPIOA
+#define Stg2_NMOS3_Pin GPIO_PIN_11
+#define Stg2_NMOS3_GPIO_Port GPIOA
+#define Stg3_NMOS2_Pin GPIO_PIN_10
+#define Stg3_NMOS2_GPIO_Port GPIOC
+#define Stg3_NMOS4_Pin GPIO_PIN_11
+#define Stg3_NMOS4_GPIO_Port GPIOC
+#define Stg2_NMOS2_Pin GPIO_PIN_9
+#define Stg2_NMOS2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

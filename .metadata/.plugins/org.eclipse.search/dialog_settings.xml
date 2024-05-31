@@ -15,7 +15,7 @@
 		</list>
 	</section>
 	<section name="SearchDialog.ScopePart">
-		<item key="scope" value="3"/>
+		<item key="scope" value="0"/>
 	</section>
 	<section name="DialogBounds_SearchDialog">
 		<item key="DIALOG_X_ORIGIN" value="687"/>
@@ -28,17 +28,44 @@
 		<item key="showEnclosingDefinitions" value="true"/>
 	</section>
 	<section name="TextSearchPage">
-		<item key="CASE_SENSITIVE" value="false"/>
+		<item key="CASE_SENSITIVE" value="true"/>
 		<item key="REG_EX_SEARCH" value="false"/>
-		<item key="WHOLE_WORD" value="false"/>
+		<item key="WHOLE_WORD" value="true"/>
 		<item key="SEARCH_DERIVED" value="false"/>
 		<item key="SEARCH_IN_BINARIES" value="false"/>
-		<item key="HISTORY_SIZE" value="3"/>
+		<item key="HISTORY_SIZE" value="5"/>
 		<section name="EXTENSIONS">
-			<item key="0" value="*.h"/>
-			<item key="1" value="*.c"/>
+			<item key="0" value="*.c, *.h"/>
+			<item key="1" value="*.h"/>
+			<item key="2" value="*.c"/>
 		</section>
 		<section name="HISTORY0">
+			<item key="ignoreCase" value="false"/>
+			<item key="isRegExSearch" value="false"/>
+			<item key="isWholeWord" value="true"/>
+			<item key="textPattern" value="LEDBLINK"/>
+			<item key="scope" value="0"/>
+			<list key="fileNamePatterns">
+				<item value="*.h"/>
+				<item value="*.c"/>
+			</list>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY1">
+			<item key="ignoreCase" value="false"/>
+			<item key="isRegExSearch" value="false"/>
+			<item key="isWholeWord" value="true"/>
+			<item key="textPattern" value="LEDON"/>
+			<item key="scope" value="0"/>
+			<list key="fileNamePatterns">
+				<item value="*.c"/>
+				<item value="*.h"/>
+			</list>
+			<list key="workingSets">
+			</list>
+		</section>
+		<section name="HISTORY2">
 			<item key="ignoreCase" value="true"/>
 			<item key="isRegExSearch" value="false"/>
 			<item key="isWholeWord" value="false"/>
@@ -50,7 +77,7 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY1">
+		<section name="HISTORY3">
 			<item key="ignoreCase" value="true"/>
 			<item key="isRegExSearch" value="false"/>
 			<item key="isWholeWord" value="false"/>
@@ -62,7 +89,7 @@
 			<list key="workingSets">
 			</list>
 		</section>
-		<section name="HISTORY2">
+		<section name="HISTORY4">
 			<item key="ignoreCase" value="true"/>
 			<item key="isRegExSearch" value="false"/>
 			<item key="isWholeWord" value="false"/>
@@ -83,5 +110,11 @@
 	</section>
 	<section name="">
 		<item key="org.eclipse.search.resultpage.limit" value="1000"/>
+	</section>
+	<section name="ReplaceDialog2">
+		<list key="replace_with">
+			<item value="ON2"/>
+			<item value="ON1"/>
+		</list>
 	</section>
 </section>

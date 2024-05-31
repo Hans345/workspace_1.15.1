@@ -26,6 +26,7 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:104_StateMachine_Test\ Debug/ac
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:104_StateMachine_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:104_StateMachine_Test/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:105_MOSFET_Test/activeLaunchMode=run
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:105_MOSFET_Test/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cube_g474_v1_4\ Debug/activeLaunchMode=run

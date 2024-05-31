@@ -6,11 +6,13 @@
  ******************************************************************************
 Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
 Im State ON1 sind:
-- NMOS1, NMOS4 = HIGH
+- Stg1_NMOS1, NMOS4 = HIGH
 - NMOS2, NMOS3 = LOW
 Im State ON2 sind:
-- NMOS1, NMOS4 = LOW
+- Stg1_NMOS1, NMOS4 = LOW
 - NMOS2, NMOS3 = HIGH
+Für den Test der Stages 1-3 müssen die GPIO in der funktion enter_handler_state()
+angepasst werden.
  ******************************************************************************
  */
 /* USER CODE END Header */
@@ -354,14 +356,15 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_4, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, Stg2_NMOS1_Pin|GPIO_PIN_3|GPIO_PIN_4|Stg2_NMOS4_Pin
+                          |Stg3_NMOS1_Pin|Stg3_NMOS3_Pin|Stg3_NMOS2_Pin|Stg3_NMOS4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|NMOS2_Pin|NMOS1_Pin
-                          |NMOS3_Pin|GPIO_PIN_15, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
+                          |Stg1_NMOS3_Pin|Stg2_NMOS3_Pin|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|NMOS4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|Stg1_NMOS4_Pin|Stg2_NMOS2_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : PC13 */
   GPIO_InitStruct.Pin = GPIO_PIN_13;
@@ -369,24 +372,26 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC3 PC4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4;
+  /*Configure GPIO pins : Stg2_NMOS1_Pin PC3 PC4 Stg2_NMOS4_Pin
+                           Stg3_NMOS1_Pin Stg3_NMOS3_Pin Stg3_NMOS2_Pin Stg3_NMOS4_Pin */
+  GPIO_InitStruct.Pin = Stg2_NMOS1_Pin|GPIO_PIN_3|GPIO_PIN_4|Stg2_NMOS4_Pin
+                          |Stg3_NMOS1_Pin|Stg3_NMOS3_Pin|Stg3_NMOS2_Pin|Stg3_NMOS4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA5 PA6 NMOS2_Pin NMOS1_Pin
-                           NMOS3_Pin PA15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|NMOS2_Pin|NMOS1_Pin
-                          |NMOS3_Pin|GPIO_PIN_15;
+  /*Configure GPIO pins : PA5 PA6 Stg1_NMOS2_Pin Stg1_NMOS1_Pin
+                           Stg1_NMOS3_Pin Stg2_NMOS3_Pin PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
+                          |Stg1_NMOS3_Pin|Stg2_NMOS3_Pin|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PB10 NMOS4_Pin */
-  GPIO_InitStruct.Pin = GPIO_PIN_10|NMOS4_Pin;
+  /*Configure GPIO pins : PB10 Stg1_NMOS4_Pin Stg2_NMOS2_Pin */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|Stg1_NMOS4_Pin|Stg2_NMOS2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;

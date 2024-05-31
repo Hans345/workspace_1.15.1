@@ -15,14 +15,32 @@
 #define B1 GPIOC
 #define B1_PIN GPIO_PIN_13
 // NMOS
-#define NMOS1 GPIOA
-#define NMOS1_PIN GPIO_PIN_8
-#define NMOS2 GPIOA
-#define NMOS2_PIN GPIO_PIN_7
-#define NMOS3 GPIOA
-#define NMOS3_PIN GPIO_PIN_9
-#define NMOS4 GPIOB
-#define NMOS4_PIN GPIO_PIN_14
+#define Stg1_NMOS1 GPIOA
+#define Stg1_NMOS1_PIN GPIO_PIN_8
+#define Stg1_NMOS2 GPIOA
+#define Stg1_NMOS2_PIN GPIO_PIN_7
+#define Stg1_NMOS3 GPIOA
+#define Stg1_NMOS3_PIN GPIO_PIN_9
+#define Stg1_NMOS4 GPIOB
+#define Stg1_NMOS4_PIN GPIO_PIN_14
+
+#define Stg2_NMOS1 GPIOC
+#define Stg2_NMOS1_PIN GPIO_PIN_2
+#define Stg2_NMOS2 GPIOB
+#define Stg2_NMOS2_PIN GPIO_PIN_9
+#define Stg2_NMOS3 GPIOA
+#define Stg2_NMOS3_PIN GPIO_PIN_11
+#define Stg2_NMOS4 GPIOC
+#define Stg2_NMOS4_PIN GPIO_PIN_5
+
+#define Stg3_NMOS1 GPIOC
+#define Stg3_NMOS1_PIN GPIO_PIN_6
+#define Stg3_NMOS2 GPIOC
+#define Stg3_NMOS2_PIN GPIO_PIN_10
+#define Stg3_NMOS3 GPIOC
+#define Stg3_NMOS3_PIN GPIO_PIN_7
+#define Stg3_NMOS4 GPIOC
+#define Stg3_NMOS4_PIN GPIO_PIN_11
 
 //-----------------------------------------------------------------------------------------------------------------------
 

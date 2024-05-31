@@ -17,10 +17,10 @@ void enter_handler_state(int state) {
 		fillScreen(BLACK);
 		ST7735_WriteString(0, 0, "State: IDLE", Font_7x10, GREEN, BLACK);
 		// Set all MOSFETs LOW
-		HAL_GPIO_WritePin(NMOS1, NMOS1_PIN, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(NMOS2, NMOS2_PIN, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(NMOS3, NMOS3_PIN, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(NMOS4, NMOS4_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS1, Stg1_NMOS1_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS2, Stg1_NMOS2_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS3, Stg1_NMOS3_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS4, Stg1_NMOS4_PIN, GPIO_PIN_RESET);
 		break;
 		//--------------------------------------------------------------------------------------
 	case ON1:
@@ -30,11 +30,11 @@ void enter_handler_state(int state) {
 		fillScreen(BLACK);
 		ST7735_WriteString(0, 0, "State: ON1", Font_7x10, GREEN, BLACK);
 		// NMOS1, NMOS4: HIGH
-		HAL_GPIO_WritePin(NMOS1, NMOS1_PIN, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(NMOS4, NMOS4_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(Stg1_NMOS1, Stg1_NMOS1_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(Stg1_NMOS4, Stg1_NMOS4_PIN, GPIO_PIN_SET);
 		// NMOS2, NMOS3: LOW
-		HAL_GPIO_WritePin(NMOS2, NMOS2_PIN, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(NMOS3, NMOS3_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS2, Stg1_NMOS2_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS3, Stg1_NMOS3_PIN, GPIO_PIN_RESET);
 		break;
 		//--------------------------------------------------------------------------------------
 	case ON2:
@@ -44,11 +44,11 @@ void enter_handler_state(int state) {
 		fillScreen(BLACK);
 		ST7735_WriteString(0, 0, "State: ON2", Font_7x10, GREEN, BLACK);
 		// NMOS1, NMOS4: LOW
-		HAL_GPIO_WritePin(NMOS1, NMOS1_PIN, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(NMOS4, NMOS4_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS1, Stg1_NMOS1_PIN, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(Stg1_NMOS4, Stg1_NMOS4_PIN, GPIO_PIN_RESET);
 		// NMOS2, NMOS3: HIGH
-		HAL_GPIO_WritePin(NMOS2, NMOS2_PIN, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(NMOS3, NMOS3_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(Stg1_NMOS2, Stg1_NMOS2_PIN, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(Stg1_NMOS3, Stg1_NMOS3_PIN, GPIO_PIN_SET);
 		break;
 		//--------------------------------------------------------------------------------------
 	default:
