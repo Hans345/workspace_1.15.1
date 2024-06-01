@@ -1,10 +1,10 @@
-16:58:06 **** Incremental Build of configuration Debug for project 106_Messungen_Test ****
+09:02:21 **** Incremental Build of configuration Debug for project 106_Messungen_Test ****
 make -j8 all 
 arm-none-eabi-size  106_Messungen_Test.elf 
    text	   data	    bss	    dec	    hex	filename
-  16236	     28	   1948	  18212	   4724	106_Messungen_Test.elf
+  14648	     28	   1764	  16440	   4038	106_Messungen_Test.elf
 Finished building: default.size.stdout
  
 
-16:58:06 Build Finished. 0 errors, 0 warnings. (took 306ms)
+09:02:21 Build Finished. 0 errors, 0 warnings. (took 315ms)
 

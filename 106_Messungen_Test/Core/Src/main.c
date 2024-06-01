@@ -4,15 +4,15 @@
  * @file           : main.c
  * @brief          : Main program body
  ******************************************************************************
-Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
-Im State ON1 sind:
-- Stg1_NMOS1, NMOS4 = HIGH
-- NMOS2, NMOS3 = LOW
-Im State ON2 sind:
-- Stg1_NMOS1, NMOS4 = LOW
-- NMOS2, NMOS3 = HIGH
-Für den Test der Stages 1-3 müssen die GPIO in der funktion enter_handler_state()
-angepasst werden.
+ Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
+ Im State ON1 sind:
+ - Stg1_NMOS1, NMOS4 = HIGH
+ - NMOS2, NMOS3 = LOW
+ Im State ON2 sind:
+ - Stg1_NMOS1, NMOS4 = LOW
+ - NMOS2, NMOS3 = HIGH
+ Für den Test der Stages 1-3 müssen die GPIO in der funktion enter_handler_state()
+ angepasst werden.
  ******************************************************************************
  */
 /* USER CODE END Header */
@@ -43,29 +43,20 @@ angepasst werden.
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
-DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim16;
-TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN PV */
-bool button_pressed = false;
-uint16_t button = 0;
-bool timeout = false;
-TIM_HandleTypeDef *timer;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
-static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
-void button_is_pressed(void);
-void timer_timeout(void);
+
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -76,18 +67,46 @@ void timer_timeout(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(GPIO_Pin);
-
-	// Button routine
-	button_pressed = true;
-	button = GPIO_Pin;
+	// Interrupt Routine
+	switch (GPIO_Pin) {
+	case B1_PIN: // B1 pressed
+		switch (handler_state) {
+		case IDLE:
+			set_handler_state(ON1);
+			break;
+		case ON1:
+			set_handler_state(ON2);
+			break;
+		case ON2:
+			set_handler_state(ON1);
+			break;
+		default:
+			set_handler_state(IDLE);
+			break;
+		}
+		break;
+	case Tast1_PIN: // Taster1 pressed
+		set_handler_state(IDLE);
+		break;
+	case Tast2_PIN: // Taster2 pressed
+		break;
+	default:
+		break;
+	}
 }
 
 // Timer timeout Callback
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
-	// Timer routine
-	timeout = true;
-	timer = htim;
+	// Überprüfe welcher Timer diese callback Funktion aufruft
+	if (htim == &htim16) {
+		// Toggle PC3 alle 100ms
+		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
+		// Handler Zeit um 100ms erhöhen
+		if (handler_state == ON2) {
+			inc_handler_currentTime(100);
+		}
+	}
 }
 
 /* USER CODE END 0 */
@@ -121,10 +140,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_SPI1_Init();
   MX_TIM16_Init();
-  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
 
 	// Display Init
@@ -147,17 +164,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		// Run StateMachine
 		handler_task();
-		// Button routine
-		if(button_pressed)
-		{
-			button_is_pressed();
-		}
-		// Timer routine
-		if(timeout)
-		{
-			timer_timeout();
-		}
-
 	}
   /* USER CODE END 3 */
 }
@@ -281,55 +287,6 @@ static void MX_TIM16_Init(void)
 }
 
 /**
-  * @brief TIM17 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM17_Init(void)
-{
-
-  /* USER CODE BEGIN TIM17_Init 0 */
-
-  /* USER CODE END TIM17_Init 0 */
-
-  /* USER CODE BEGIN TIM17_Init 1 */
-
-  /* USER CODE END TIM17_Init 1 */
-  htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 15000 - 1;
-  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim17.Init.Period = 20000;
-  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim17.Init.RepetitionCounter = 0;
-  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM17_Init 2 */
-
-  /* USER CODE END TIM17_Init 2 */
-
-}
-
-/**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMAMUX1_CLK_ENABLE();
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -409,65 +366,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void button_is_pressed(void)
-{
-	// Interrupt Routine
-	switch(button){
-	case B1_PIN: // B1 pressed
-		switch(handler_state){
-		case IDLE:
-			// Start Timer 17
-			HAL_TIM_Base_Start_IT(&htim17);
-			set_handler_state(ON1);
-			break;
-		case ON1:
-			// Start Timer 17
-			HAL_TIM_Base_Start_IT(&htim17);
-			set_handler_state(ON2);
-			break;
-		case ON2:
-			// Start Timer 17
-			HAL_TIM_Base_Start_IT(&htim17);
-			set_handler_state(ON1);
-			break;
-		default:
-			// Start Timer 17
-			HAL_TIM_Base_Stop_IT(&htim17);
-			set_handler_state(IDLE);
-			break;
-		}
-		break;
-	case Tast1_PIN: // Taster1 pressed
-		break;
-	case Tast2_PIN: // Taster2 pressed
-		break;
-	default:
-		break;
-	}
-	// Reset Flag
-	button_pressed = false;
-}
-void timer_timeout(void)
-{
-	// Überprüfe welcher Timer diese callback Funktion aufruft
-	if (timer == &htim16) {
-		// Toggle PC3 alle 100ms
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
-		// Handler Zeit um 100ms erhöhen
-		if (handler_state == ON2) {
-			inc_handler_currentTime(100);
-		}
-	} else if (timer == &htim17) {
-		if (HAL_GPIO_ReadPin(B1, B1_PIN)) {
-			set_handler_state(IDLE);
-			HAL_TIM_Base_Stop_IT(&htim17);
-		}
-		// Toggle PC4 alle 1s
-		HAL_GPIO_TogglePin(LD2, LD2_PIN);
-	}
-	// Reset Flag
-	timeout = false;
-}
+
 /* USER CODE END 4 */
 
 /**
