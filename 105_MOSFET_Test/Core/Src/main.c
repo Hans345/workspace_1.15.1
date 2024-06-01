@@ -4,15 +4,15 @@
  * @file           : main.c
  * @brief          : Main program body
  ******************************************************************************
-Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
-Im State ON1 sind:
-- Stg1_NMOS1, NMOS4 = HIGH
-- NMOS2, NMOS3 = LOW
-Im State ON2 sind:
-- Stg1_NMOS1, NMOS4 = LOW
-- NMOS2, NMOS3 = HIGH
-Für den Test der Stages 1-3 müssen die GPIO in der funktion enter_handler_state()
-angepasst werden.
+ Mit diesem Code werden die MOSFETs der H-Brücke diagonal geschaltet.
+ Im State ON1 sind:
+ - Stg1_NMOS1, NMOS4 = HIGH
+ - NMOS2, NMOS3 = LOW
+ Im State ON2 sind:
+ - Stg1_NMOS1, NMOS4 = LOW
+ - NMOS2, NMOS3 = HIGH
+ Für den Test der Stages 1-3 müssen die GPIO in der funktion enter_handler_state()
+ angepasst werden.
  ******************************************************************************
  */
 /* USER CODE END Header */
@@ -24,6 +24,7 @@ angepasst werden.
 #include "ST7735.h"
 #include "GFX_FUNCTIONS.h"
 #include "task_handler.h"
+#include <stdbool.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,23 +43,18 @@ angepasst werden.
 
 /* Private variables ---------------------------------------------------------*/
 SPI_HandleTypeDef hspi1;
-DMA_HandleTypeDef hdma_spi1_tx;
 
 TIM_HandleTypeDef htim16;
-TIM_HandleTypeDef htim17;
 
 /* USER CODE BEGIN PV */
-uint8_t button_flag = 0;
 
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-static void MX_DMA_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
-static void MX_TIM17_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -68,29 +64,40 @@ static void MX_TIM17_Init(void);
 
 /* Interrupts *****************************************************************/
 // GPIO Callback
-// Diese Callback Funktion wird beim drücken des Taster B1 aufgerufen
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
-	if (handler_state == IDLE && button_flag == 0) {
-		set_handler_state(ON1);
-		// Start Timer 17
-		HAL_TIM_Base_Start_IT(&htim17);
-	} else if (handler_state == ON1) {
-		set_handler_state(ON2);
-		// Start Timer 17
-		HAL_TIM_Base_Start_IT(&htim17);
-	} else if (handler_state == ON2) {
-		set_handler_state(ON1);
-		// Start Timer 17
-		HAL_TIM_Base_Start_IT(&htim17);
-	} else {
+	/* Prevent unused argument(s) compilation warning */
+	UNUSED(GPIO_Pin);
+	// Interrupt Routine
+	switch (GPIO_Pin) {
+	case B1_PIN: // B1 pressed
+		switch (handler_state) {
+		case IDLE:
+			set_handler_state(ON1);
+			break;
+		case ON1:
+			set_handler_state(ON2);
+			break;
+		case ON2:
+			set_handler_state(ON1);
+			break;
+		default:
+			set_handler_state(IDLE);
+			break;
+		}
+		break;
+	case Tast1_PIN: // Taster1 pressed
 		set_handler_state(IDLE);
-		button_flag = 0;
+		break;
+	case Tast2_PIN: // Taster2 pressed
+		break;
+	default:
+		break;
 	}
 }
 
-// Timer Callback
-// Diese Callback Funktion wird immer nach erreichen des Timer maximums aufgerufen
+// Timer timeout Callback
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+
 	// Überprüfe welcher Timer diese callback Funktion aufruft
 	if (htim == &htim16) {
 		// Toggle PC3 alle 100ms
@@ -99,14 +106,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if (handler_state == ON2) {
 			inc_handler_currentTime(100);
 		}
-	} else if (htim == &htim17) {
-		if (HAL_GPIO_ReadPin(B1, B1_PIN)) {
-			set_handler_state(IDLE);
-			HAL_TIM_Base_Stop_IT(&htim17);
-			button_flag = 1;
-		}
-		// Toggle PC4 alle 1s
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
 	}
 }
 
@@ -141,10 +140,8 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_SPI1_Init();
   MX_TIM16_Init();
-  MX_TIM17_Init();
   /* USER CODE BEGIN 2 */
 
 	// Display Init
@@ -235,7 +232,7 @@ static void MX_SPI1_Init(void)
   /* SPI1 parameter configuration*/
   hspi1.Instance = SPI1;
   hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_1LINE;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
@@ -290,55 +287,6 @@ static void MX_TIM16_Init(void)
 }
 
 /**
-  * @brief TIM17 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM17_Init(void)
-{
-
-  /* USER CODE BEGIN TIM17_Init 0 */
-
-  /* USER CODE END TIM17_Init 0 */
-
-  /* USER CODE BEGIN TIM17_Init 1 */
-
-  /* USER CODE END TIM17_Init 1 */
-  htim17.Instance = TIM17;
-  htim17.Init.Prescaler = 15000 - 1;
-  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim17.Init.Period = 20000;
-  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim17.Init.RepetitionCounter = 0;
-  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM17_Init 2 */
-
-  /* USER CODE END TIM17_Init 2 */
-
-}
-
-/**
-  * Enable DMA controller clock
-  */
-static void MX_DMA_Init(void)
-{
-
-  /* DMA controller clock enable */
-  __HAL_RCC_DMAMUX1_CLK_ENABLE();
-  __HAL_RCC_DMA1_CLK_ENABLE();
-
-  /* DMA interrupt init */
-  /* DMA1_Channel1_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel1_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel1_IRQn);
-
-}
-
-/**
   * @brief GPIO Initialization Function
   * @param None
   * @retval None
@@ -360,17 +308,17 @@ static void MX_GPIO_Init(void)
                           |Stg3_NMOS1_Pin|Stg3_NMOS3_Pin|Stg3_NMOS2_Pin|Stg3_NMOS4_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
                           |Stg1_NMOS3_Pin|Stg2_NMOS3_Pin|GPIO_PIN_15, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10|Stg1_NMOS4_Pin|Stg2_NMOS2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
+  /*Configure GPIO pin : B1_EXTI13_Pin */
+  GPIO_InitStruct.Pin = B1_EXTI13_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  HAL_GPIO_Init(B1_EXTI13_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Stg2_NMOS1_Pin PC3 PC4 Stg2_NMOS4_Pin
                            Stg3_NMOS1_Pin Stg3_NMOS3_Pin Stg3_NMOS2_Pin Stg3_NMOS4_Pin */
@@ -381,14 +329,20 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PA5 PA6 Stg1_NMOS2_Pin Stg1_NMOS1_Pin
+  /*Configure GPIO pins : LD2_Pin PA6 Stg1_NMOS2_Pin Stg1_NMOS1_Pin
                            Stg1_NMOS3_Pin Stg2_NMOS3_Pin PA15 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
+  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6|Stg1_NMOS2_Pin|Stg1_NMOS1_Pin
                           |Stg1_NMOS3_Pin|Stg2_NMOS3_Pin|GPIO_PIN_15;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : Tast1_EXTI1_Pin Tast2_EXTI2_Pin */
+  GPIO_InitStruct.Pin = Tast1_EXTI1_Pin|Tast2_EXTI2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PB10 Stg1_NMOS4_Pin Stg2_NMOS2_Pin */
   GPIO_InitStruct.Pin = GPIO_PIN_10|Stg1_NMOS4_Pin|Stg2_NMOS2_Pin;
@@ -398,6 +352,12 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI1_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI2_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI2_IRQn);
+
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 

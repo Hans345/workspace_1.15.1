@@ -1098,3 +1098,6 @@ Command-line arguments:  -os win32 -ws win32 -arch x86_64
 
 !ENTRY com.st.stm32cube.ide.mcu.ide 1 1 2024-06-01 08:32:21.544
 !MESSAGE Started RMI Server, listening on port 41337
+
+!ENTRY org.eclipse.cdt.core 1 0 2024-06-01 09:10:25.916
+!MESSAGE Indexed '105_MOSFET_Test' (27 sources, 122 headers) in 2.92 sec: 13,306 declarations; 73,537 references; 3 unresolved inclusions; 46 syntax errors; 171 unresolved names (0.2%)

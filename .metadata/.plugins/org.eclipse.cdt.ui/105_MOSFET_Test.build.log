@@ -1,10 +1,10 @@
-10:33:42 **** Incremental Build of configuration Debug for project 105_MOSFET_Test ****
+09:11:28 **** Incremental Build of configuration Debug for project 105_MOSFET_Test ****
 make -j8 all 
 arm-none-eabi-size  105_MOSFET_Test.elf 
    text	   data	    bss	    dec	    hex	filename
-  16000	     28	   1940	  17968	   4630	105_MOSFET_Test.elf
+  14648	     28	   1764	  16440	   4038	105_MOSFET_Test.elf
 Finished building: default.size.stdout
  
 
-10:33:42 Build Finished. 0 errors, 0 warnings. (took 305ms)
+09:11:28 Build Finished. 0 errors, 0 warnings. (took 306ms)
 

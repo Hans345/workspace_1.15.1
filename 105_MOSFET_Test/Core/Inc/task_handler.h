@@ -10,10 +10,16 @@
 
 //-----------------------------------------------------------------------------------------------------------------------
 /* PIN DEFINES *********************************************************************************************************/
+// LEDs
 #define LD2 GPIOA
 #define LD2_PIN  GPIO_PIN_5
+// Buttons
 #define B1 GPIOC
 #define B1_PIN GPIO_PIN_13
+#define Tast1 GPIOB
+#define Tast1_PIN GPIO_PIN_1
+#define Tast2 GPIOB
+#define Tast2_PIN GPIO_PIN_2
 // NMOS
 #define Stg1_NMOS1 GPIOA
 #define Stg1_NMOS1_PIN GPIO_PIN_8
