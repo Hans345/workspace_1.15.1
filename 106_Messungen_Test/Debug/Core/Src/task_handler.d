@@ -34,7 +34,8 @@ Core/Src/task_handler.o: ../Core/Src/task_handler.c \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_tim_ex.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart.h \
  ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_uart_ex.h \
- ../Core/Inc/ST7735.h ../Core/Inc/fonts.h ../Core/Inc/GFX_FUNCTIONS.h
+ ../Core/Inc/ST7735.h ../Core/Inc/fonts.h ../Core/Inc/GFX_FUNCTIONS.h \
+ ../Core/Inc/main.h
 ../Core/Inc/task_handler.h:
 ../Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal.h:
 ../Core/Inc/stm32g4xx_hal_conf.h:
@@ -73,3 +74,4 @@ Core/Src/task_handler.o: ../Core/Src/task_handler.c \
 ../Core/Inc/ST7735.h:
 ../Core/Inc/fonts.h:
 ../Core/Inc/GFX_FUNCTIONS.h:
+../Core/Inc/main.h:

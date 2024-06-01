@@ -25,8 +25,6 @@
 #include "GFX_FUNCTIONS.h"
 #include "task_handler.h"
 #include <stdbool.h>
-#include <stdio.h>
-#include <string.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -45,17 +43,17 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+ADC_HandleTypeDef hadc2;
 
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim16;
+TIM_HandleTypeDef htim17;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint16_t poti1_V = 0;
-char msg[20];
-
+uint8_t px_ofs2 = 15;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,13 +63,65 @@ static void MX_SPI1_Init(void);
 static void MX_TIM16_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_TIM17_Init(void);
+static void MX_ADC2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+/* Select ADC Channels when using no DMA **************************************/
+void ADC_Select_CH1(void)
+{
+	  ADC_ChannelConfTypeDef sConfig = {0};
+	  /** Configure Regular Channel
+	  */
+	  sConfig.Channel = ADC_CHANNEL_1;
+	  sConfig.Rank = ADC_REGULAR_RANK_1;
+	  sConfig.SamplingTime = ADC_SAMPLETIME_47CYCLES_5;
+	  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+	  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+	  sConfig.Offset = 0;
+	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+	  {
+	    Error_Handler();
+	  }
+}
 
+//void ADC_Select_CH2(void)
+//{
+//	  ADC_ChannelConfTypeDef sConfig = {0};
+//	  /** Configure Regular Channel
+//	  */
+//	  sConfig.Channel = ADC_CHANNEL_2;
+//	  sConfig.Rank = ADC_REGULAR_RANK_1;
+//	  sConfig.SamplingTime = ADC_SAMPLETIME_47CYCLES_5;
+//	  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+//	  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+//	  sConfig.Offset = 0;
+//	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//	  {
+//	    Error_Handler();
+//	  }
+//}
+
+//void ADC_Select_CH15(void)
+//{
+//	  ADC_ChannelConfTypeDef sConfig = {0};
+//	  /** Configure Regular Channel
+//	  */
+//	  sConfig.Channel = ADC_CHANNEL_15;
+//	  sConfig.Rank = ADC_REGULAR_RANK_1;
+//	  sConfig.SamplingTime = ADC_SAMPLETIME_47CYCLES_5;
+//	  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+//	  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+//	  sConfig.Offset = 0;
+//	  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
+//	  {
+//	    Error_Handler();
+//	  }
+//}
 /* Interrupts *****************************************************************/
 // GPIO Callback
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
@@ -79,7 +129,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	UNUSED(GPIO_Pin);
 	// Interrupt Routine
 	switch (GPIO_Pin) {
-	case B1_PIN: // B1 pressed
+	case B1_EXTI13_Pin: // B1 pressed
 		switch (handler_state) {
 		case IDLE:
 			set_handler_state(ADC_Values);
@@ -92,9 +142,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 			break;
 		}
 		break;
-	case Tast1_PIN: // Taster1 pressed
+	case Tast1_EXTI1_Pin: // Taster1 pressed
 		break;
-	case Tast2_PIN: // Taster2 pressed
+	case Tast2_EXTI2_Pin: // Taster2 pressed
 		break;
 	default:
 		break;
@@ -104,15 +154,49 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 // Timer timeout Callback
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
+	__disable_irq();
 	// Überprüfe welcher Timer diese callback Funktion aufruft
+	// Time_val um 100ms inkrementieren
 	if (htim == &htim16) {
-		// Toggle PC3 alle 100ms
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
-		// Handler Zeit um 100ms erhöhen
 		if (handler_state == ADC_Values) {
 			inc_handler_currentTime(100);
 		}
 	}
+	// Refresh Display every 0.5s
+	else if(htim == &htim17){
+		switch (handler_state) {
+		case IDLE:
+			ST7735_WriteString(0, px_ofs2, "Poti1: xx", Font_7x10, GREEN, BLACK);
+			ST7735_WriteString(0, 2*px_ofs2, "Poti2: xx", Font_7x10, GREEN, BLACK);
+			ST7735_WriteString(0, 3*px_ofs2, "BNC1: xx", Font_7x10, GREEN, BLACK);
+			ST7735_WriteString(0, 4*px_ofs2, "BNC2: xx", Font_7x10, GREEN, BLACK);
+			break;
+		case ADC_Values:
+			adc_values* ptr = get_adc_values();
+			char msg[13];
+			sprintf(msg, "Poti1: %2.2fV", ptr->poti1_Vf);
+			ST7735_WriteString(0, px_ofs2, msg, Font_7x10, GREEN, BLACK);
+			sprintf(msg, "Poti2: %2.2fV", ptr->poti2_Vf);
+			ST7735_WriteString(0, 2*px_ofs2, msg, Font_7x10, GREEN, BLACK);
+			sprintf(msg, "BNC1:  %2.2fV", ptr->bnc1_Vf);
+			ST7735_WriteString(0, 3*px_ofs2, msg, Font_7x10, GREEN, BLACK);
+			sprintf(msg, "BNC2:  %2.2fV", ptr->bnc2_Vf);
+			ST7735_WriteString(0, 4*px_ofs2, msg, Font_7x10, GREEN, BLACK);
+			break;
+		default:
+			set_handler_state(IDLE);
+			break;
+		}
+
+	}
+	__enable_irq();
+}
+
+/* ADC *******************************************************************/
+void print_ADC_values(void)
+{
+
 }
 
 /* USER CODE END 0 */
@@ -150,14 +234,16 @@ int main(void)
   MX_TIM16_Init();
   MX_ADC1_Init();
   MX_USART2_UART_Init();
+  MX_TIM17_Init();
+  MX_ADC2_Init();
   /* USER CODE BEGIN 2 */
 
 	// Display Init
 	ST7735_Init(1);
 	fillScreen(BLACK);
 
-	// Start Timer 16
-	HAL_TIM_Base_Start_IT(&htim16); // Starte Timer 16 im Interrupt Modus
+	// Start Timers im Interrupt Modus
+	HAL_TIM_Base_Start_IT(&htim16);
 
 	// Set first State
 	set_handler_state(IDLE);
@@ -172,16 +258,6 @@ int main(void)
     /* USER CODE BEGIN 3 */
 		// Run StateMachine
 		handler_task();
-		// ADC
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
-		HAL_ADC_Start(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, 20); // timeout 20ms
-		poti1_V = HAL_ADC_GetValue(&hadc1);
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
-		// Print ADC Value in Console
-		sprintf(msg, "Poti1 Voltage: %hu \r\n", poti1_V);
-		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-		HAL_Delay(500);
 	}
   /* USER CODE END 3 */
 }
@@ -261,7 +337,7 @@ static void MX_ADC1_Init(void)
   hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
   hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
   hadc1.Init.LowPowerAutoWait = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
+  hadc1.Init.ContinuousConvMode = ENABLE;
   hadc1.Init.NbrOfConversion = 1;
   hadc1.Init.DiscontinuousConvMode = DISABLE;
   hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
@@ -286,7 +362,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_1;
   sConfig.Rank = ADC_REGULAR_RANK_1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_92CYCLES_5;
+  sConfig.SamplingTime = ADC_SAMPLETIME_640CYCLES_5;
   sConfig.SingleDiff = ADC_SINGLE_ENDED;
   sConfig.OffsetNumber = ADC_OFFSET_NONE;
   sConfig.Offset = 0;
@@ -297,6 +373,65 @@ static void MX_ADC1_Init(void)
   /* USER CODE BEGIN ADC1_Init 2 */
 
   /* USER CODE END ADC1_Init 2 */
+
+}
+
+/**
+  * @brief ADC2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_ADC2_Init(void)
+{
+
+  /* USER CODE BEGIN ADC2_Init 0 */
+
+  /* USER CODE END ADC2_Init 0 */
+
+  ADC_ChannelConfTypeDef sConfig = {0};
+
+  /* USER CODE BEGIN ADC2_Init 1 */
+
+  /* USER CODE END ADC2_Init 1 */
+
+  /** Common config
+  */
+  hadc2.Instance = ADC2;
+  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV4;
+  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
+  hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
+  hadc2.Init.GainCompensation = 0;
+  hadc2.Init.ScanConvMode = ADC_SCAN_DISABLE;
+  hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
+  hadc2.Init.LowPowerAutoWait = DISABLE;
+  hadc2.Init.ContinuousConvMode = DISABLE;
+  hadc2.Init.NbrOfConversion = 1;
+  hadc2.Init.DiscontinuousConvMode = DISABLE;
+  hadc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
+  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
+  hadc2.Init.DMAContinuousRequests = DISABLE;
+  hadc2.Init.Overrun = ADC_OVR_DATA_PRESERVED;
+  hadc2.Init.OversamplingMode = DISABLE;
+  if (HAL_ADC_Init(&hadc2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Regular Channel
+  */
+  sConfig.Channel = ADC_CHANNEL_17;
+  sConfig.Rank = ADC_REGULAR_RANK_1;
+  sConfig.SamplingTime = ADC_SAMPLETIME_640CYCLES_5;
+  sConfig.SingleDiff = ADC_SINGLE_ENDED;
+  sConfig.OffsetNumber = ADC_OFFSET_NONE;
+  sConfig.Offset = 0;
+  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN ADC2_Init 2 */
+
+  /* USER CODE END ADC2_Init 2 */
 
 }
 
@@ -369,6 +504,38 @@ static void MX_TIM16_Init(void)
   /* USER CODE BEGIN TIM16_Init 2 */
 
   /* USER CODE END TIM16_Init 2 */
+
+}
+
+/**
+  * @brief TIM17 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM17_Init(void)
+{
+
+  /* USER CODE BEGIN TIM17_Init 0 */
+
+  /* USER CODE END TIM17_Init 0 */
+
+  /* USER CODE BEGIN TIM17_Init 1 */
+
+  /* USER CODE END TIM17_Init 1 */
+  htim17.Instance = TIM17;
+  htim17.Init.Prescaler = 15000-1;
+  htim17.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim17.Init.Period = 5000;
+  htim17.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim17.Init.RepetitionCounter = 0;
+  htim17.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim17) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM17_Init 2 */
+
+  /* USER CODE END TIM17_Init 2 */
 
 }
 
