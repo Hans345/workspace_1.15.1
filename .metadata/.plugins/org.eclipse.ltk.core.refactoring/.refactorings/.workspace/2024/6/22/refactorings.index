@@ -2,3 +2,6 @@
 1717225821638	Rename resource '106_Messungen_Test'
 1717225831341	Delete resource '105_MOSFET_Test/106_Messungen_Test.launch'
 1717225834858	Delete resource '105_MOSFET_Test/Debug'
+1717226110205	Delete resource '106_Messungen_Test/Debug'
+1717226112357	Delete resource '106_Messungen_Test/105_MOSFET_Test.launch'
+1717227786167	Delete resource 'CPP_autoconsole'
