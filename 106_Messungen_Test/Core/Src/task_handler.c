@@ -5,9 +5,8 @@
 /* VARIABLES ***********************************************************************************************************/
 uint8_t handler_state;
 uint8_t prev_handler_state;
-uint16_t time_val = 0;
-char msg[20];
-uint8_t px_ofs1 = 11;
+uint16_t time_val = 0;	// 0.1s Zeitschritt
+uint8_t px_ofs1 = 11;	// Offset in pixel
 
 adc_raw_values adc_raw_values1;
 adc_values adc_values1;
@@ -63,37 +62,17 @@ void exec_handler_state(int state) {
 		// ADC
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
 
-		ADC_Select_CH1();
-		HAL_ADC_Start(&hadc1);
-		HAL_ADC_PollForConversion(&hadc1, 20); // timeout 20ms
-		adc_raw_values1.poti1_V = HAL_ADC_GetValue(&hadc1);
-		adc_values1.poti1_Vf = (3.3*(float)adc_raw_values1.poti1_V)/4095;
-		HAL_ADC_Stop(&hadc1);
+		adc_raw_values1.poti1_V = (AD_RES_BUFFER_ADC1[0] << 4); // Map 12 Bit to 16 Bit values
+		adc_values1.poti1_Vf = (3.3*(float)adc_raw_values1.poti1_V)/65535;
+	    adc_raw_values1.poti2_V = (AD_RES_BUFFER_ADC1[1] << 4);
+	    adc_values1.poti2_Vf = (3.3*(float)adc_raw_values1.poti2_V)/65535;
+	    adc_raw_values1.bnc1_V = (AD_RES_BUFFER_ADC1[2] << 4);
+	    adc_values1.bnc1_Vf = (3.3*(float) adc_raw_values1.bnc1_V)/65535;
 
-//		ADC_Select_CH2();
-//		HAL_ADC_Start(&hadc1);
-//		HAL_ADC_PollForConversion(&hadc1, 20); // timeout 20ms
-//		adc_raw_values1.poti2_V = HAL_ADC_GetValue(&hadc1);
-//		adc_values1.poti2_Vf = (3.3*(float)adc_raw_values1.poti2_V)/4095;
-//		HAL_ADC_Stop(&hadc1);
-
-//		ADC_Select_CH15();
-//		HAL_ADC_Start(&hadc1);
-//		HAL_ADC_PollForConversion(&hadc1, 20); // timeout 20ms
-//		adc_raw_values1.bnc1_V = HAL_ADC_GetValue(&hadc1);
-//		adc_values1.bnc1_Vf = (3.3*(float)adc_raw_values1.bnc1_V)/4095;
-//		HAL_ADC_Stop(&hadc1);
-
-		HAL_ADC_Start(&hadc2);
-		HAL_ADC_PollForConversion(&hadc2, 20); // timeout 20ms
-		adc_raw_values1.bnc2_V = HAL_ADC_GetValue(&hadc2);
-		adc_values1.bnc2_Vf = (3.3*(float)adc_raw_values1.bnc2_V)/4095;
-		HAL_ADC_Stop(&hadc2);
+	    adc_raw_values1.bnc2_V = (AD_RES_BUFFER_ADC2[0] << 4);
+	    adc_values1.bnc2_Vf = (3.3*(float) adc_raw_values1.bnc2_V)/65535;
 
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
-		// Print ADC Value in Console
-		sprintf(msg, "Poti1: %2.2fV \r\n", adc_values1.poti1_Vf);
-		HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
 		break;
 		//--------------------------------------------------------------------------------------
 	default:

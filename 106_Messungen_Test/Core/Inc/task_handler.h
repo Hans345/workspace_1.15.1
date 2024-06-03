@@ -11,7 +11,7 @@
 #include "GFX_FUNCTIONS.h"
 
 //-----------------------------------------------------------------------------------------------------------------------
-
+// Strukturen für ADC Messungen
 typedef struct {
 	uint16_t poti1_V;
 	uint16_t poti2_V;

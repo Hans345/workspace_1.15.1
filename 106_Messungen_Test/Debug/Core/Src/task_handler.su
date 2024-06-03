@@ -1,8 +1,8 @@
-../Core/Src/task_handler.c:15:6:enter_handler_state	32	static
-../Core/Src/task_handler.c:50:6:exec_handler_state	16	static
-../Core/Src/task_handler.c:107:6:leave_handler_state	16	static
-../Core/Src/task_handler.c:126:6:handler_task	8	static
-../Core/Src/task_handler.c:130:6:set_handler_state	16	static
-../Core/Src/task_handler.c:137:9:get_handler_state	4	static
-../Core/Src/task_handler.c:141:6:inc_handler_currentTime	16	static
-../Core/Src/task_handler.c:145:13:get_adc_values	4	static
+../Core/Src/task_handler.c:14:6:enter_handler_state	32	static
+../Core/Src/task_handler.c:49:6:exec_handler_state	16	static
+../Core/Src/task_handler.c:86:6:leave_handler_state	16	static
+../Core/Src/task_handler.c:105:6:handler_task	8	static
+../Core/Src/task_handler.c:109:6:set_handler_state	16	static
+../Core/Src/task_handler.c:116:9:get_handler_state	4	static
+../Core/Src/task_handler.c:120:6:inc_handler_currentTime	16	static
+../Core/Src/task_handler.c:124:13:get_adc_values	4	static

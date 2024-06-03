@@ -36,10 +36,9 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-extern ADC_HandleTypeDef hadc1;
-extern ADC_HandleTypeDef hadc2;
-
-extern UART_HandleTypeDef huart2;
+// Diese Variablen werden in task_handler.c benötigt, darum extern.
+extern uint32_t AD_RES_BUFFER_ADC1[3];
+extern uint32_t AD_RES_BUFFER_ADC2[1];
 
 extern TIM_HandleTypeDef htim17;
 
@@ -59,9 +58,7 @@ extern TIM_HandleTypeDef htim17;
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
-void ADC_Select_CH1(void);
-//void ADC_Select_CH2(void);
-//void ADC_Select_CH15(void);
+
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
