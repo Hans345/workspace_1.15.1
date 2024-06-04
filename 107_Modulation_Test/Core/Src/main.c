@@ -42,6 +42,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -58,12 +59,10 @@ DMA_HandleTypeDef hdma_adc2;
 SPI_HandleTypeDef hspi1;
 
 TIM_HandleTypeDef htim1;
-TIM_HandleTypeDef htim2;
 TIM_HandleTypeDef htim16;
 TIM_HandleTypeDef htim17;
 DMA_HandleTypeDef hdma_tim1_ch1;
 DMA_HandleTypeDef hdma_tim1_ch2;
-DMA_HandleTypeDef hdma_tim2_up;
 
 UART_HandleTypeDef huart2;
 
@@ -76,11 +75,6 @@ uint32_t AD_RES_BUFFER_ADC2[1];
 char msg_console[80];
 // Char Array für Display
 char msg_display[20];
-// PWM Modulation
-const uint32_t fSW = 20000;	  	// Schaltfrequenz in [Hz]
-const float f0 = 1000;			// Zu modulierende Frequenz [Hz]
-static uint32_t PWM_index = 1;
-const float pi = M_PI;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -94,7 +88,6 @@ static void MX_USART2_UART_Init(void);
 static void MX_TIM17_Init(void);
 static void MX_ADC2_Init(void);
 static void MX_TIM1_Init(void);
-static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -111,9 +104,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	case B1_EXTI13_Pin: // B1 pressed
 		switch (handler_state) {
 		case IDLE:
-			set_handler_state(ADC_Values);
+			set_handler_state(SINUS_MOD);
 			break;
-		case ADC_Values:
+		case SINUS_MOD:
 			set_handler_state(IDLE);
 			break;
 		default:
@@ -124,9 +117,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	case Tast1_EXTI1_Pin: // Taster1 pressed
 		// Display
 		// Clear Last Button Message
-		ST7735_FillRectangle(0, 5 * px_ofs2, 0, px_ofs2, BLACK);
+		ST7735_FillRectangle(0, 6 * px_ofs2, 0, px_ofs2, BLACK);
 		sprintf(msg_display, "Taster1 gedrueckt!");
-		ST7735_WriteString(0, 5 * px_ofs2, msg_display, Font_7x10, GREEN,
+		ST7735_WriteString(0, 7 * px_ofs2, msg_display, Font_7x10, GREEN,
 		BLACK);
 		// Console
 		sprintf(msg_console, "Taster1 gedrückt! \r\n");
@@ -136,9 +129,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	case Tast2_EXTI2_Pin: // Taster2 pressed
 		// Display
 		// Clear Last Button Message
-		ST7735_FillRectangle(0, 5 * px_ofs2, 0, px_ofs2, BLACK);
+		ST7735_FillRectangle(0, 6 * px_ofs2, 0, px_ofs2, BLACK);
 		sprintf(msg_display, "Taster2 gedrueckt!");
-		ST7735_WriteString(0, 5 * px_ofs2, msg_display, Font_7x10, GREEN,
+		ST7735_WriteString(0, 7 * px_ofs2, msg_display, Font_7x10, GREEN,
 		BLACK);
 		// Console
 		sprintf(msg_console, "Taster2 gedrückt! \r\n");
@@ -154,9 +147,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// Überprüfe welcher Timer diese callback Funktion aufruft
 	// time_val um 100ms inkrementieren
-	/*if (htim == &htim16) {
+	if (htim == &htim16) {
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
-		if (handler_state == ADC_Values) {
+		if (handler_state == SINUS_MOD) {
 			inc_handler_currentTime(100);
 		}
 	}
@@ -173,7 +166,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			ST7735_WriteString(0, 4 * px_ofs2, "BNC2: xx", Font_7x10, GREEN,
 			BLACK);
 			break;
-		case ADC_Values:
+		case SINUS_MOD:
 			// Display
 			adc_values *ptr = get_adc_values();
 			sprintf(msg_display, "Poti1: %2.2fV", ptr->poti1_Vf);
@@ -188,10 +181,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			sprintf(msg_display, "BNC2:  %2.2fV", ptr->bnc2_Vf);
 			ST7735_WriteString(0, 4 * px_ofs2, msg_display, Font_7x10, GREEN,
 			BLACK);
+//			sprintf(msg_display, "f0 =  %4luHz", f0);
+//			ST7735_WriteString(0, 5 * px_ofs2, msg_display, Font_7x10, GREEN,
+//			BLACK);
+//			sprintf(msg_display, "A0 =  %2.2f%%", 100.0*A0);
+//			ST7735_WriteString(0, 6 * px_ofs2, msg_display, Font_7x10, GREEN,
+//			BLACK);
 			// Console
 			sprintf(msg_console,
-					"Poti1: %2.2fV | Poti2: %2.2fV | bnc1: %2.2fV | bnc2: %2.2fV \r\n",
-					ptr->poti1_Vf, ptr->poti2_Vf, ptr->bnc1_Vf, ptr->bnc2_Vf);
+					"Poti1: %2.2fV | Poti2: %2.2fV | bnc1: %2.2fV | bnc2: %2.2fV \r\n", //| f0 = %4luHz | A0 = %2.2f%% \r\n",
+					ptr->poti1_Vf, ptr->poti2_Vf, ptr->bnc1_Vf, ptr->bnc2_Vf);//, f0, 100.0*A0);
 			HAL_UART_Transmit(&huart2, (uint8_t*) msg_console,
 					strlen(msg_console), HAL_MAX_DELAY);
 			break;
@@ -199,30 +198,30 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			set_handler_state(IDLE);
 			break;
 		}
-	}*/
-	// Update duty cycle für PWM Modulation alle 20us
-	if(htim == &htim2)
-	{
-		const uint32_t nSamples = fSW/f0;
-		const uint32_t MaxPWM_value = 250;
-		uint32_t PWM_CH1 = 0;
-
-		if(PWM_index >= nSamples)
-		{
-			PWM_index = 1;fre
-		}
-
-		PWM_CH1 = (uint32_t)(MaxPWM_value*sinf(((2*pi)/nSamples)*PWM_index) + MaxPWM_value);
-
-		if(PWM_CH1 < 0)
-		{
-			PWM_CH1 = 0;
-		}
-
-		TIM1->CCR1 = PWM_CH1;
-
-		PWM_index++;
 	}
+//	// Update duty cycle für PWM Modulation alle 20us
+//	if(htim == &htim2)
+//	{
+//		const uint32_t nSamples = fSW/f0;
+//		const uint32_t MaxPWM_value = 250;
+//		uint32_t PWM_CH1 = 0;
+//
+//		if(PWM_index >= nSamples)
+//		{
+//			PWM_index = 1;
+//		}
+//
+//		PWM_CH1 = (uint32_t)(MaxPWM_value*sinf(((2*pi)/nSamples)*PWM_index) + MaxPWM_value);
+//
+//		if(PWM_CH1 < 0)
+//		{
+//			PWM_CH1 = 0;
+//		}
+//
+//		TIM1->CCR1 = PWM_CH1;
+//
+//		PWM_index++;
+//	}
 }
 
 /* ADC *******************************************************************/
@@ -287,25 +286,60 @@ int main(void)
   MX_TIM17_Init();
   MX_ADC2_Init();
   MX_TIM1_Init();
-  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
 
 	// Display Init
 	ST7735_Init(1);
 	fillScreen(BLACK);
 
-	// Start Timers im Interrupt Modus
-	HAL_TIM_Base_Start_IT(&htim16);
+	// Array dynamisch berechnen
+//	uint32_t NrOfEl = fPWM / f0;
+//	float dDeg = 360.0 / (NrOfEl - 1);		// Winkelschritt [deg]
+//	float dRad = (2 * pi) / (NrOfEl - 1);		// Winkelschritt [rad]
+//	float deg_arr[NrOfEl];
+//	float rad_arr[NrOfEl];
+//	float sin_arr[NrOfEl];
+//	float posOffset[NrOfEl];
+//	float norm[NrOfEl];
+//	uint32_t ccr_arr[NrOfEl];
+//	uint32_t i = 1;
+//	for (i = 0; i < NrOfEl; i++) {
+//		if (i == 0) {
+//			deg_arr[i] = 0;
+//			rad_arr[i] = 0;
+//			sin_arr[i] = 0;
+//			posOffset[i] = 1;
+//			norm[i] = (TIM1->ARR) / 2 + 1;
+//			ccr_arr[i] = (uint32_t) norm[i];
+//		} else if (i == 1) {
+//			deg_arr[i] = i * dDeg;
+//			rad_arr[i] = i * dRad;
+//			sin_arr[i] = A0*sinf(i * dRad);
+//			posOffset[i] = posOffset[0] + sin_arr[i];
+//			norm[i] = norm[0] * posOffset[i];
+//			ccr_arr[i] = (uint32_t) norm[i];
+//		} else {
+//			deg_arr[i] = i * dDeg;
+//			rad_arr[i] = i * dRad;
+//			sin_arr[i] = A0*sinf(i * dRad);
+//			posOffset[i] = posOffset[0] + sin_arr[i];
+//			norm[i] = norm[0] * posOffset[i];
+//			ccr_arr[i] = (uint32_t) norm[i];
+//		}
+//	}
 
-	// Start ADC1 & ADC2 mit DMA transfer
-	HAL_ADC_Start_DMA(&hadc1, AD_RES_BUFFER_ADC1, 3);
-	HAL_ADC_Start_DMA(&hadc2, AD_RES_BUFFER_ADC2, 1);
-
-	// PWM Timer starten
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1); 		// Start positiv Channel CH1
-	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1); 	// Start negativ Channel CH1N
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2); 		// Start positiv Channel CH2
-	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2); 	// Start negativ Channel CH2N
+//	typedef struct { int len; int iarray[]; } Vint_t;
+//	Vint_t *Viptr = malloc ( sizeof(Vint_t) + LEN*sizeof(int) );
+//	Viptr->len = LEN;
+//	for( int i = 0; i < Viptr->len; i++ )
+//	{
+//		Viptr->iarray[i] = i * i;
+//	}
+//  	for( int i = 0; i < Viptr->len; i++ )
+//  	{
+//  		sprintf(msg_console, "Viptr->iarray[%d]: %3d\r\n", i ,Viptr->iarray[i]);
+//  		HAL_UART_Transmit(&huart2, (uint8_t*) msg_console, strlen(msg_console), HAL_MAX_DELAY);
+//  	}
 
 	// Set first State
 	set_handler_state(IDLE);
@@ -576,12 +610,12 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 1 */
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 15-1;
+  htim1.Init.Prescaler = 0;
   htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim1.Init.Period = 499;
+  htim1.Init.Period = 7499;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = 0;
-  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_ENABLE;
   if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
   {
     Error_Handler();
@@ -603,7 +637,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 750;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_DISABLE;
@@ -613,6 +647,8 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
+  sConfigOC.OCPolarity = TIM_OCPOLARITY_LOW;
+  sConfigOC.OCNPolarity = TIM_OCNPOLARITY_LOW;
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();
@@ -638,51 +674,6 @@ static void MX_TIM1_Init(void)
 
   /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
-
-}
-
-/**
-  * @brief TIM2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_TIM2_Init(void)
-{
-
-  /* USER CODE BEGIN TIM2_Init 0 */
-
-  /* USER CODE END TIM2_Init 0 */
-
-  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
-  TIM_MasterConfigTypeDef sMasterConfig = {0};
-
-  /* USER CODE BEGIN TIM2_Init 1 */
-
-  /* USER CODE END TIM2_Init 1 */
-  htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 15-1;
-  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 499;
-  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
-  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN TIM2_Init 2 */
-
-  /* USER CODE END TIM2_Init 2 */
 
 }
 
@@ -819,9 +810,6 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
-  /* DMA1_Channel4_IRQn interrupt configuration */
-  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
   /* DMA2_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Channel1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Channel1_IRQn);

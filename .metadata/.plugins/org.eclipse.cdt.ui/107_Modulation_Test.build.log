@@ -1,10 +1,10 @@
-16:36:41 **** Incremental Build of configuration Debug for project 107_Modulation_Test ****
+17:23:22 **** Incremental Build of configuration Debug for project 107_Modulation_Test ****
 make -j8 all 
 arm-none-eabi-size  107_Modulation_Test.elf 
    text	   data	    bss	    dec	    hex	filename
-  55396	    496	   3120	  59012	   e684	107_Modulation_Test.elf
+  59816	    492	   3148	  63456	   f7e0	107_Modulation_Test.elf
 Finished building: default.size.stdout
  
 
-16:36:41 Build Finished. 0 errors, 0 warnings. (took 368ms)
+17:23:22 Build Finished. 0 errors, 0 warnings. (took 359ms)
 
