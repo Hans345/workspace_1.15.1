@@ -11,7 +11,11 @@ uint8_t px_ofs1 = 11;	// Offset in pixel
 adc_raw_values adc_raw_values1;
 adc_values adc_values1;
 
-pwm_sin_mod *pwmPtr;
+pwm_sin_mod *pwmPtr_1;
+#ifdef STAGES_3
+	pwm_sin_mod *pwmPtr_2;
+#endif
+
 
 void enter_handler_state(int state) {
 	switch (state) {
@@ -46,11 +50,18 @@ void enter_handler_state(int state) {
 		set_pwm_values(fPWM, f0, A0);
 		// PWM Timer mit DMA starten
 		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1,
-				(uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
+				(uint32_t*) pwmPtr_1->ccr_arr, pwmPtr_1->NrOfEl);
 		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
-				(uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
-		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+		#ifdef STAGES_3
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
+					(uint32_t*) pwmPtr_2->ccr_arr, pwmPtr_2->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+		#else
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
+					(uint32_t*) pwmPtr_1->ccr_arr, pwmPtr_1->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+		#endif
+
 		break;
 		//--------------------------------------------------------------------------------------
 	default:
@@ -118,7 +129,10 @@ void leave_handler_state(int state) {
 		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
 		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
 		// dynamisch allozierter Speicher freigeben
-		free(pwmPtr);
+		free(pwmPtr_1);
+		#ifdef STAGES_3
+			free(pwmPtr_2);
+		#endif
 		break;
 		//--------------------------------------------------------------------------------------
 	default:
@@ -156,35 +170,50 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 	// Char array für ausgabe
 	char msg_console1[80];
 	// Speicher dynamisch allozieren
-	pwmPtr = malloc(
-			sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
-	pwmPtr->NrOfEl = (uint32_t) (fPWM / f0);
+	pwmPtr_1 = malloc(sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
+	pwmPtr_1->NrOfEl = (uint32_t) (fPWM / f0);
+	#ifdef STAGES_3
+		pwmPtr_2 = malloc(sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
+		pwmPtr_2->NrOfEl = (uint32_t) (fPWM / f0);
+	#endif
 	// Struktur mit Werten füllen
 	const float pi = M_PI;
-	float dRad = (2 * pi) / (pwmPtr->NrOfEl - 1);	// Winkelschritt [rad]
+	float dRad = (2 * pi) / (pwmPtr_1->NrOfEl - 1);	// Winkelschritt [rad]
+	float norm0 = ((TIM1->ARR) / 2) + 1;
 	float sin_val = 0;
 	float posOffset0 = 1;
-	float posOffsetCurr = 0;
-	float norm0 = ((TIM1->ARR) / 2) + 1;
-	float normCurr = 0;
+	float posOffsetCurr_1 = 0;
+	float normCurr_1 = 0;
+	#ifdef STAGES_3
+		float posOffsetCurr_2 = 0;
+		float normCurr_2 = 0;
+	#endif
 	uint32_t i = 1;
-	for (i = 0; i < pwmPtr->NrOfEl; i++) {
+	for (i = 0; i < pwmPtr_1->NrOfEl; i++) {
 		if (i == 0) {
-			pwmPtr->ccr_arr[i] = (uint32_t) norm0;
-		} else if (i == 1) {
-			sin_val = A0 * sinf(i * dRad);
-			posOffsetCurr = posOffset0 + sin_val;
-			normCurr = norm0 * posOffsetCurr;
-			pwmPtr->ccr_arr[i] = (uint32_t) normCurr;
+			pwmPtr_1->ccr_arr[i] = (uint32_t) norm0;
+			#ifdef STAGES_3
+				pwmPtr_2->ccr_arr[i] = (uint32_t) norm0;
+			#endif
 		} else {
 			sin_val = A0 * sinf(i * dRad);
-			posOffsetCurr = posOffset0 + sin_val;
-			normCurr = norm0 * posOffsetCurr;
-			pwmPtr->ccr_arr[i] = (uint32_t) normCurr;
+			posOffsetCurr_1 = posOffset0 + sin_val;
+			normCurr_1 = norm0 * posOffsetCurr_1;
+			pwmPtr_1->ccr_arr[i] = (uint32_t) normCurr_1;
+			#ifdef STAGES_3
+				posOffsetCurr_2 = posOffset0 - sin_val; // Sinusreferenz für 3-Stufen hier MINUS!
+				normCurr_2 = norm0 * posOffsetCurr_2;
+				pwmPtr_2->ccr_arr[i] = (uint32_t) normCurr_2;
+			#endif
 		}
-		// Daten ausgeben
-		sprintf(msg_console1, "pwmPtr->ccr_arr[%lu]: %3lu\r\n", i,
-				pwmPtr->ccr_arr[i]);
+		// Dynamisch allozierter Speicher ausgeben
+		#ifdef STAGES_3
+		sprintf(msg_console1, "pwmPtr_1->ccr_arr[%lu]: %3lu  |  pwmPtr_2->ccr_arr[%lu]: %3lu\r\n", i,
+				pwmPtr_1->ccr_arr[i], i, pwmPtr_2->ccr_arr[i]);
+		#else
+		sprintf(msg_console1, "pwmPtr_1->ccr_arr[%lu]: %3lu\r\n", i,
+				pwmPtr_1->ccr_arr[i]);
+		#endif
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg_console1,
 				strlen(msg_console1), HAL_MAX_DELAY);
 	}
