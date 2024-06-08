@@ -49,6 +49,11 @@ extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
 
 extern UART_HandleTypeDef huart2;
+
+// PWM Modulation
+extern const uint32_t fPWM;		// Schaltfrequenz in [Hz]
+extern const uint32_t f0;		// Zu modulierende Frequenz [Hz]
+extern const float A0;			// Zu modulierende Amplitude [0...1]
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

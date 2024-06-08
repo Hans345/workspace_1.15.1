@@ -11,12 +11,7 @@ uint8_t px_ofs1 = 11;	// Offset in pixel
 adc_raw_values adc_raw_values1;
 adc_values adc_values1;
 
-// PWM Modulation
-const uint32_t fPWM = 20000;	// Schaltfrequenz in [Hz]
-const uint32_t f0 = 500;		// Zu modulierende Frequenz [Hz]
-const float A0 = 1;				// Zu modulierende Amplitude [0...1]
 pwm_sin_mod *pwmPtr;
-
 
 void enter_handler_state(int state) {
 	switch (state) {
@@ -50,9 +45,11 @@ void enter_handler_state(int state) {
 		// Set PWM Values
 		set_pwm_values(fPWM, f0, A0);
 		// PWM Timer mit DMA starten
-		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
+		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1,
+				(uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
 		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
+		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
+				(uint32_t*) pwmPtr->ccr_arr, pwmPtr->NrOfEl);
 		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
 		break;
 		//--------------------------------------------------------------------------------------
@@ -81,14 +78,14 @@ void exec_handler_state(int state) {
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
 
 		adc_raw_values1.poti1_V = (AD_RES_BUFFER_ADC1[0] << 4); // Map 12 Bit to 16 Bit values
-		adc_values1.poti1_Vf = (3.3*(float)adc_raw_values1.poti1_V)/65535;
-	    adc_raw_values1.poti2_V = (AD_RES_BUFFER_ADC1[1] << 4);
-	    adc_values1.poti2_Vf = (3.3*(float)adc_raw_values1.poti2_V)/65535;
-	    adc_raw_values1.bnc1_V = (AD_RES_BUFFER_ADC1[2] << 4);
-	    adc_values1.bnc1_Vf = (3.3*(float) adc_raw_values1.bnc1_V)/65535;
+		adc_values1.poti1_Vf = (3.3 * (float) adc_raw_values1.poti1_V) / 65535;
+		adc_raw_values1.poti2_V = (AD_RES_BUFFER_ADC1[1] << 4);
+		adc_values1.poti2_Vf = (3.3 * (float) adc_raw_values1.poti2_V) / 65535;
+		adc_raw_values1.bnc1_V = (AD_RES_BUFFER_ADC1[2] << 4);
+		adc_values1.bnc1_Vf = (3.3 * (float) adc_raw_values1.bnc1_V) / 65535;
 
-	    adc_raw_values1.bnc2_V = (AD_RES_BUFFER_ADC2[0] << 4);
-	    adc_values1.bnc2_Vf = (3.3*(float) adc_raw_values1.bnc2_V)/65535;
+		adc_raw_values1.bnc2_V = (AD_RES_BUFFER_ADC2[0] << 4);
+		adc_values1.bnc2_Vf = (3.3 * (float) adc_raw_values1.bnc2_V) / 65535;
 
 		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_4);
 		break;
@@ -151,24 +148,20 @@ void inc_handler_currentTime(uint16_t dT) {
 	time_val = time_val + dT;
 }
 
-adc_values* get_adc_values(void)
-{
+adc_values* get_adc_values(void) {
 	return &adc_values1;
 }
 
-void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0)
-{
+void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 	// Char array für ausgabe
 	char msg_console1[80];
 	// Speicher dynamisch allozieren
-	pwmPtr = malloc(sizeof(pwm_sin_mod) + (fPWM/f0)*sizeof(uint32_t));
-	pwmPtr->NrOfEl = (fPWM/f0);
+	pwmPtr = malloc(
+			sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
+	pwmPtr->NrOfEl = (uint32_t) (fPWM / f0);
 	// Struktur mit Werten füllen
 	const float pi = M_PI;
-	float dDeg = 360.0 / (pwmPtr->NrOfEl - 1);		// Winkelschritt [deg]
 	float dRad = (2 * pi) / (pwmPtr->NrOfEl - 1);	// Winkelschritt [rad]
-	float deg_val = 0;
-	float rad_val = 0;
 	float sin_val = 0;
 	float posOffset0 = 1;
 	float posOffsetCurr = 0;
@@ -179,25 +172,20 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0)
 		if (i == 0) {
 			pwmPtr->ccr_arr[i] = (uint32_t) norm0;
 		} else if (i == 1) {
-			deg_val = i * dDeg;
-			rad_val = i * dRad;
 			sin_val = A0 * sinf(i * dRad);
 			posOffsetCurr = posOffset0 + sin_val;
 			normCurr = norm0 * posOffsetCurr;
 			pwmPtr->ccr_arr[i] = (uint32_t) normCurr;
 		} else {
-			deg_val = i * dDeg;
-			rad_val = i * dRad;
 			sin_val = A0 * sinf(i * dRad);
 			posOffsetCurr = posOffset0 + sin_val;
 			normCurr = norm0 * posOffsetCurr;
 			pwmPtr->ccr_arr[i] = (uint32_t) normCurr;
 		}
 		// Daten ausgeben
-		sprintf(msg_console1, "pwmPtr->ccr_arr[%d]: %3lu\r\n", i ,pwmPtr->ccr_arr[i]);
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg_console1, strlen(msg_console1), HAL_MAX_DELAY);
+		sprintf(msg_console1, "pwmPtr->ccr_arr[%lu]: %3lu\r\n", i,
+				pwmPtr->ccr_arr[i]);
+		HAL_UART_Transmit(&huart2, (uint8_t*) msg_console1,
+				strlen(msg_console1), HAL_MAX_DELAY);
 	}
-
-	// Speicher freigeben
-	// free(pwmPtr);
 }
