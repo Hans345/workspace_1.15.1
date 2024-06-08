@@ -1,19 +1,10 @@
-17:20:36 **** Incremental Build of configuration Debug for project 107_Modulation_Test ****
+18:07:28 **** Incremental Build of configuration Debug for project 107_Modulation_Test ****
 make -j8 all 
-arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G474xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
-arm-none-eabi-gcc "../Core/Src/task_handler.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32G474xx -c -I../Core/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc -I../Drivers/STM32G4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32G4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/task_handler.d" -MT"Core/Src/task_handler.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/task_handler.o"
-arm-none-eabi-gcc -o "107_Modulation_Test.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\107_Modulation_Test\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="107_Modulation_Test.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
-C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: 107_Modulation_Test.elf has a LOAD segment with RWX permissions
-Finished building target: 107_Modulation_Test.elf
- 
 arm-none-eabi-size  107_Modulation_Test.elf 
-arm-none-eabi-objdump -h -S 107_Modulation_Test.elf  > "107_Modulation_Test.list"
    text	   data	    bss	    dec	    hex	filename
-  59736	    492	   3148	  63376	   f790	107_Modulation_Test.elf
+  59984	    492	   3148	  63624	   f888	107_Modulation_Test.elf
 Finished building: default.size.stdout
  
-Finished building: 107_Modulation_Test.list
- 
 
-17:20:37 Build Finished. 0 errors, 1 warnings. (took 1s.168ms)
+18:07:28 Build Finished. 0 errors, 0 warnings. (took 301ms)
 

@@ -13,7 +13,7 @@
 #include <math.h>
 
 //Defines----------------------------------------------------------------------------------------------------------------
-//#define STAGES_3 // Auskommetiert -> 2-Stufen Modulation
+#define STAGES_3 // Auskommetiert -> 2-Stufen Modulation
 
 //-----------------------------------------------------------------------------------------------------------------------
 // Strukturen für ADC Messungen

@@ -37,7 +37,11 @@ void enter_handler_state(int state) {
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 		// Update Display
 		fillScreen(BLACK);
-		ST7735_WriteString(0, 0, "State: SINUS_MOD", Font_7x10, GREEN, BLACK);
+		#ifdef STAGES_3
+				ST7735_WriteString(0, 0, "State: SINUS_3St", Font_7x10, GREEN, BLACK);
+		#else
+				ST7735_WriteString(0, 0, "State: SINUS_2St", Font_7x10, GREEN, BLACK);
+		#endif
 		drawFastHLine(0, px_ofs1, 128, WHITE);
 		// Start Timer17 for updating values on Display
 		HAL_TIM_Base_Start_IT(&htim17);
