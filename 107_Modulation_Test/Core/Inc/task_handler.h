@@ -56,5 +56,6 @@ uint8_t get_handler_state(void);
 void inc_handler_currentTime(uint16_t dT);
 adc_values* get_adc_values(void);
 void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0);
+void stopp_pwm(void);
 
 #endif // __TASK_HANDLER_H__

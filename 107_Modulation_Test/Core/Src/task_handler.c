@@ -128,15 +128,7 @@ void leave_handler_state(int state) {
 		HAL_ADC_Stop_DMA(&hadc1);
 		HAL_ADC_Stop_DMA(&hadc2);
 		// PWM Timer mit DMA stoppen
-		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
-		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
-		HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
-		HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
-		// dynamisch allozierter Speicher freigeben
-		free(pwmPtr_1);
-		#ifdef STAGES_3
-			free(pwmPtr_2);
-		#endif
+		stopp_pwm();
 		break;
 		//--------------------------------------------------------------------------------------
 	default:
@@ -221,4 +213,37 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg_console1,
 				strlen(msg_console1), HAL_MAX_DELAY);
 	}
+}
+
+void stopp_pwm(void)
+{
+	uint16_t state1 = 0;
+	uint16_t state2 = 0;
+	// Stop LOW Side PWM
+	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
+	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
+	while((state1 && state2) != GPIO_PIN_RESET)
+	{
+		// Wait until PWMN stopps
+		state1 = HAL_GPIO_ReadPin(TIM1_CH1N_NMOS2_LS_GPIO_Port, TIM1_CH1N_NMOS2_LS_Pin);
+		state2 = HAL_GPIO_ReadPin(TIM1_CH2N_NMOS4_LS_GPIO_Port, TIM1_CH2N_NMOS4_LS_Pin);
+	}
+
+	state1 = 0;
+	state2 = 0;
+	// Stop High Side PWM
+	HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
+	HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
+	while((state1 && state2) != GPIO_PIN_RESET)
+	{
+		// Wait until PWM stopps
+		state1 = HAL_GPIO_ReadPin(TIM1_CH1_NMOS1_HS_GPIO_Port, TIM1_CH1_NMOS1_HS_Pin);
+		state2 = HAL_GPIO_ReadPin(TIM1_CH2_NMOS3_HS_GPIO_Port, TIM1_CH2_NMOS3_HS_Pin);
+	}
+
+	// dynamisch allozierter Speicher freigeben
+	free(pwmPtr_1);
+	#ifdef STAGES_3
+		free(pwmPtr_2);
+	#endif
 }

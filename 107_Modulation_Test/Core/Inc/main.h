@@ -89,6 +89,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define SPI1_RST_Pin GPIO_PIN_6
 #define SPI1_RST_GPIO_Port GPIOA
+#define TIM1_CH1N_NMOS2_LS_Pin GPIO_PIN_7
+#define TIM1_CH1N_NMOS2_LS_GPIO_Port GPIOA
 #define Stg2_NMOS4_Pin GPIO_PIN_5
 #define Stg2_NMOS4_GPIO_Port GPIOC
 #define Tast1_EXTI1_Pin GPIO_PIN_1
@@ -105,6 +107,8 @@ void Error_Handler(void);
 #define Stg3_NMOS1_GPIO_Port GPIOC
 #define Stg3_NMOS3_Pin GPIO_PIN_7
 #define Stg3_NMOS3_GPIO_Port GPIOC
+#define TIM1_CH1_NMOS1_HS_Pin GPIO_PIN_8
+#define TIM1_CH1_NMOS1_HS_GPIO_Port GPIOA
 #define TIM1_CH2_NMOS3_HS_Pin GPIO_PIN_9
 #define TIM1_CH2_NMOS3_HS_GPIO_Port GPIOA
 #define Stg2_NMOS3_Pin GPIO_PIN_11
