@@ -13,9 +13,8 @@ adc_values adc_values1;
 
 pwm_sin_mod *pwmPtr_1;
 #ifdef STAGES_3
-	pwm_sin_mod *pwmPtr_2;
+pwm_sin_mod *pwmPtr_2;
 #endif
-
 
 void enter_handler_state(int state) {
 	switch (state) {
@@ -37,9 +36,9 @@ void enter_handler_state(int state) {
 		HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
 		// Update Display
 		fillScreen(BLACK);
-		#ifdef STAGES_3
-				ST7735_WriteString(0, 0, "State: SINUS_3St", Font_7x10, GREEN, BLACK);
-		#else
+#ifdef STAGES_3
+		ST7735_WriteString(0, 0, "State: SINUS_3St", Font_7x10, GREEN, BLACK);
+#else
 				ST7735_WriteString(0, 0, "State: SINUS_2St", Font_7x10, GREEN, BLACK);
 		#endif
 		drawFastHLine(0, px_ofs1, 128, WHITE);
@@ -56,11 +55,11 @@ void enter_handler_state(int state) {
 		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1,
 				(uint32_t*) pwmPtr_1->ccr_arr, pwmPtr_1->NrOfEl);
 		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
-		#ifdef STAGES_3
-			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
-					(uint32_t*) pwmPtr_2->ccr_arr, pwmPtr_2->NrOfEl);
-			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
-		#else
+#ifdef STAGES_3
+		HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
+				(uint32_t*) pwmPtr_2->ccr_arr, pwmPtr_2->NrOfEl);
+		HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+#else
 			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
 					(uint32_t*) pwmPtr_1->ccr_arr, pwmPtr_1->NrOfEl);
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
@@ -166,12 +165,14 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 	// Char array für ausgabe
 	char msg_console1[80];
 	// Speicher dynamisch allozieren
-	pwmPtr_1 = malloc(sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
+	pwmPtr_1 = malloc(
+			sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
 	pwmPtr_1->NrOfEl = (uint32_t) (fPWM / f0);
-	#ifdef STAGES_3
-		pwmPtr_2 = malloc(sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
-		pwmPtr_2->NrOfEl = (uint32_t) (fPWM / f0);
-	#endif
+#ifdef STAGES_3
+	pwmPtr_2 = malloc(
+			sizeof(pwm_sin_mod) + (uint32_t) (fPWM / f0) * sizeof(uint32_t));
+	pwmPtr_2->NrOfEl = (uint32_t) (fPWM / f0);
+#endif
 	// Struktur mit Werten füllen
 	const float pi = M_PI;
 	float dRad = (2 * pi) / (pwmPtr_1->NrOfEl - 1);	// Winkelschritt [rad]
@@ -180,33 +181,34 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 	float posOffset0 = 1;
 	float posOffsetCurr_1 = 0;
 	float normCurr_1 = 0;
-	#ifdef STAGES_3
-		float posOffsetCurr_2 = 0;
-		float normCurr_2 = 0;
-	#endif
+#ifdef STAGES_3
+	float posOffsetCurr_2 = 0;
+	float normCurr_2 = 0;
+#endif
 	uint32_t i = 1;
 	for (i = 0; i < pwmPtr_1->NrOfEl; i++) {
 		if (i == 0) {
 			pwmPtr_1->ccr_arr[i] = (uint32_t) norm0;
-			#ifdef STAGES_3
-				pwmPtr_2->ccr_arr[i] = (uint32_t) norm0;
-			#endif
+#ifdef STAGES_3
+			pwmPtr_2->ccr_arr[i] = (uint32_t) norm0;
+#endif
 		} else {
 			sin_val = A0 * sinf(i * dRad);
 			posOffsetCurr_1 = posOffset0 + sin_val;
 			normCurr_1 = norm0 * posOffsetCurr_1;
 			pwmPtr_1->ccr_arr[i] = (uint32_t) normCurr_1;
-			#ifdef STAGES_3
-				posOffsetCurr_2 = posOffset0 - sin_val; // Sinusreferenz für 3-Stufen hier MINUS!
-				normCurr_2 = norm0 * posOffsetCurr_2;
-				pwmPtr_2->ccr_arr[i] = (uint32_t) normCurr_2;
-			#endif
+#ifdef STAGES_3
+			posOffsetCurr_2 = posOffset0 - sin_val; // Sinusreferenz für 3-Stufen hier MINUS!
+			normCurr_2 = norm0 * posOffsetCurr_2;
+			pwmPtr_2->ccr_arr[i] = (uint32_t) normCurr_2;
+#endif
 		}
 		// Dynamisch allozierter Speicher ausgeben
-		#ifdef STAGES_3
-		sprintf(msg_console1, "pwmPtr_1->ccr_arr[%lu]: %3lu  |  pwmPtr_2->ccr_arr[%lu]: %3lu\r\n", i,
-				pwmPtr_1->ccr_arr[i], i, pwmPtr_2->ccr_arr[i]);
-		#else
+#ifdef STAGES_3
+		sprintf(msg_console1,
+				"pwmPtr_1->ccr_arr[%lu]: %3lu  |  pwmPtr_2->ccr_arr[%lu]: %3lu\r\n",
+				i, pwmPtr_1->ccr_arr[i], i, pwmPtr_2->ccr_arr[i]);
+#else
 		sprintf(msg_console1, "pwmPtr_1->ccr_arr[%lu]: %3lu\r\n", i,
 				pwmPtr_1->ccr_arr[i]);
 		#endif
@@ -215,35 +217,27 @@ void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0) {
 	}
 }
 
-void stopp_pwm(void)
-{
-	uint16_t state1 = 0;
-	uint16_t state2 = 0;
-	// Stop LOW Side PWM
+void stopp_pwm(void) {
+	uint16_t gpio_state = GPIO_PIN_SET;
+	while(gpio_state != GPIO_PIN_RESET)
+	{
+		gpio_state = HAL_GPIO_ReadPin(TIM1_CH1N_NMOS2_LS_GPIO_Port,TIM1_CH1N_NMOS2_LS_Pin);
+	}
+	// Stop PWM NMOS1 & NMOS2
 	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_1);
-	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
-	while((state1 && state2) != GPIO_PIN_RESET)
-	{
-		// Wait until PWMN stopps
-		state1 = HAL_GPIO_ReadPin(TIM1_CH1N_NMOS2_LS_GPIO_Port, TIM1_CH1N_NMOS2_LS_Pin);
-		state2 = HAL_GPIO_ReadPin(TIM1_CH2N_NMOS4_LS_GPIO_Port, TIM1_CH2N_NMOS4_LS_Pin);
-	}
-
-	state1 = 0;
-	state2 = 0;
-	// Stop High Side PWM
 	HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_1);
-	HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
-	while((state1 && state2) != GPIO_PIN_RESET)
+
+	while(gpio_state != GPIO_PIN_RESET)
 	{
-		// Wait until PWM stopps
-		state1 = HAL_GPIO_ReadPin(TIM1_CH1_NMOS1_HS_GPIO_Port, TIM1_CH1_NMOS1_HS_Pin);
-		state2 = HAL_GPIO_ReadPin(TIM1_CH2_NMOS3_HS_GPIO_Port, TIM1_CH2_NMOS3_HS_Pin);
+		gpio_state = HAL_GPIO_ReadPin(TIM1_CH2N_NMOS4_LS_GPIO_Port,TIM1_CH2N_NMOS4_LS_Pin);
 	}
+	// Stop PWM NMOS3 & NMOS4
+	HAL_TIMEx_PWMN_Stop(&htim1, TIM_CHANNEL_2);
+	HAL_TIM_PWM_Stop_DMA(&htim1, TIM_CHANNEL_2);
 
 	// dynamisch allozierter Speicher freigeben
 	free(pwmPtr_1);
-	#ifdef STAGES_3
-		free(pwmPtr_2);
-	#endif
+#ifdef STAGES_3
+	free(pwmPtr_2);
+#endif
 }
