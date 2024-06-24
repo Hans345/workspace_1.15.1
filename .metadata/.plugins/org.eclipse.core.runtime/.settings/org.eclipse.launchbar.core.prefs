@@ -1,7 +1,7 @@
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/arch=x86_64
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/name=Local
 LaunchTargetManager/org.eclipse.launchbar.core.launchTargetType.local,Local/os=win32
-configDescList=org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Sinusmodulation_1Stufe
+configDescList=org.eclipse.launchbar.core.descriptorType.default\:108_Show_Timervalues Debug
 eclipse.preferences.version=1
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:011_Display_w_DMA_Test\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:011_Display_w_DMA_Test/activeLaunchMode=run
@@ -32,9 +32,14 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:106_Messungen_Test/activeLaunch
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Modulation_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Modulation_Test/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Sinusmodulation_1Stufe/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Sinusmodulation_2Stufen/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:108_Sinusmodulation_2Stufen/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:109_Sinusmodulation_2Stufen/activeLaunchMode=debug
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CPP_autoconsole/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cube_g474_v1_4\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cube_g474_v1_4/activeLaunchMode=debug
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:cube_g474_v1_4/activeLaunchTarget=null\:---
+org.eclipse.launchbar.core.descriptorType.default\:108_Show_Timervalues\ Debug/activeLaunchMode=debug
+org.eclipse.launchbar.core.descriptorType.default\:108_Show_Timervalues\ Debug/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

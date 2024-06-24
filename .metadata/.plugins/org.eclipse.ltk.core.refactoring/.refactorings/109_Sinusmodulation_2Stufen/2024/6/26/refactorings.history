@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;107_Sinusmodulation_2Stufen/107_Sinusmodulation_1Stufe.ioc&apos; to &apos;107_Sinusmodulation_2Stufen.ioc&apos;" description="Rename resource &apos;107_Sinusmodulation_1Stufe.ioc&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="107_Sinusmodulation_1Stufe.ioc" name="107_Sinusmodulation_2Stufen.ioc" stamp="1719209308637" updateReferences="true"/>
+</session>
