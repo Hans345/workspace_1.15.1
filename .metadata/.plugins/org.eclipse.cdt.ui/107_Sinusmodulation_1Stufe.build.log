@@ -1,0 +1,10 @@
+08:04:32 **** Incremental Build of configuration Debug for project 107_Sinusmodulation_1Stufe ****
+make -j8 all 
+arm-none-eabi-size  107_Sinusmodulation_1Stufe.elf 
+   text	   data	    bss	    dec	    hex	filename
+  60104	    492	   3148	  63744	   f900	107_Sinusmodulation_1Stufe.elf
+Finished building: default.size.stdout
+ 
+
+08:04:32 Build Finished. 0 errors, 0 warnings. (took 379ms)
+
