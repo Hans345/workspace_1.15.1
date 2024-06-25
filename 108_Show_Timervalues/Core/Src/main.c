@@ -284,15 +284,6 @@ int main(void)
 		HAL_Delay(0.1);
 		tim_cnt_val = TIM1->CNT;
 		printf("Counter = %lu\r\n", tim_cnt_val);
-//		if(tim_cnt_val > 100)
-//		{
-//			tim_cnt_val = 0;
-//		}
-//		else
-//		{
-//			tim_cnt_val++;
-//		}
-
 	}
   /* USER CODE END 3 */
 }
@@ -536,7 +527,7 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM1;
-  sConfigOC.Pulse = 1875;
+  sConfigOC.Pulse = 0;
   sConfigOC.OCPolarity = TIM_OCPOLARITY_HIGH;
   sConfigOC.OCNPolarity = TIM_OCNPOLARITY_HIGH;
   sConfigOC.OCFastMode = TIM_OCFAST_ENABLE;
@@ -547,7 +538,6 @@ static void MX_TIM1_Init(void)
     Error_Handler();
   }
   sConfigOC.OCMode = TIM_OCMODE_PWM2;
-  sConfigOC.Pulse = 0;
   if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
   {
     Error_Handler();

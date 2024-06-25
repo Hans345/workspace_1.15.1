@@ -1,17 +1,10 @@
-11:51:49 **** Incremental Build of configuration Debug for project 108_Show_Timervalues ****
+09:35:39 **** Incremental Build of configuration Debug for project 108_Show_Timervalues ****
 make -j8 all 
-arm-none-eabi-gcc -o "108_Show_Timervalues.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\raphael.baumeler\STM32CubeIDE\workspace_1.15.1\108_Show_Timervalues\STM32G474RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="108_Show_Timervalues.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -Wl,--start-group -lc -lm -Wl,--end-group
-C:/ST/STM32CubeIDE_1.14.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/bin/ld.exe: warning: 108_Show_Timervalues.elf has a LOAD segment with RWX permissions
-Finished building target: 108_Show_Timervalues.elf
- 
 arm-none-eabi-size  108_Show_Timervalues.elf 
-arm-none-eabi-objdump -h -S 108_Show_Timervalues.elf  > "108_Show_Timervalues.list"
    text	   data	    bss	    dec	    hex	filename
-  52868	    476	   3036	  56380	   dc3c	108_Show_Timervalues.elf
+  52860	    476	   3036	  56372	   dc34	108_Show_Timervalues.elf
 Finished building: default.size.stdout
  
-Finished building: 108_Show_Timervalues.list
- 
 
-11:51:52 Build Finished. 0 errors, 1 warnings. (took 2s.253ms)
+09:35:40 Build Finished. 0 errors, 0 warnings. (took 627ms)
 
