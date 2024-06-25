@@ -36,10 +36,6 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-// Diese Variablen werden in task_handler.c benötigt, darum extern.
-extern uint32_t AD_RES_BUFFER_ADC1[3];
-extern uint32_t AD_RES_BUFFER_ADC2[1];
-
 extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 
@@ -79,8 +75,8 @@ void Error_Handler(void);
 #define B1_EXTI13_Pin GPIO_PIN_13
 #define B1_EXTI13_GPIO_Port GPIOC
 #define B1_EXTI13_EXTI_IRQn EXTI15_10_IRQn
-#define Stg2_NMOS1_Pin GPIO_PIN_2
-#define Stg2_NMOS1_GPIO_Port GPIOC
+#define TIM1_CH3_NMOS1_HS_Pin GPIO_PIN_2
+#define TIM1_CH3_NMOS1_HS_GPIO_Port GPIOC
 #define ADC1_IN1_Poti1_Pin GPIO_PIN_0
 #define ADC1_IN1_Poti1_GPIO_Port GPIOA
 #define ADC1_IN2_Poti2_Pin GPIO_PIN_1
@@ -91,8 +87,8 @@ void Error_Handler(void);
 #define SPI1_RST_GPIO_Port GPIOA
 #define TIM1_CH1N_NMOS2_LS_Pin GPIO_PIN_7
 #define TIM1_CH1N_NMOS2_LS_GPIO_Port GPIOA
-#define Stg2_NMOS4_Pin GPIO_PIN_5
-#define Stg2_NMOS4_GPIO_Port GPIOC
+#define TIM1_CH4N_NMOS4_LS_Pin GPIO_PIN_5
+#define TIM1_CH4N_NMOS4_LS_GPIO_Port GPIOC
 #define Tast1_EXTI1_Pin GPIO_PIN_1
 #define Tast1_EXTI1_GPIO_Port GPIOB
 #define Tast1_EXTI1_EXTI_IRQn EXTI1_IRQn
@@ -103,24 +99,16 @@ void Error_Handler(void);
 #define SPI1_DC_GPIO_Port GPIOB
 #define TIM1_CH2N_NMOS4_LS_Pin GPIO_PIN_14
 #define TIM1_CH2N_NMOS4_LS_GPIO_Port GPIOB
-#define Stg3_NMOS1_Pin GPIO_PIN_6
-#define Stg3_NMOS1_GPIO_Port GPIOC
-#define Stg3_NMOS3_Pin GPIO_PIN_7
-#define Stg3_NMOS3_GPIO_Port GPIOC
 #define TIM1_CH1_NMOS1_HS_Pin GPIO_PIN_8
 #define TIM1_CH1_NMOS1_HS_GPIO_Port GPIOA
 #define TIM1_CH2_NMOS3_HS_Pin GPIO_PIN_9
 #define TIM1_CH2_NMOS3_HS_GPIO_Port GPIOA
-#define Stg2_NMOS3_Pin GPIO_PIN_11
-#define Stg2_NMOS3_GPIO_Port GPIOA
+#define TIM1_CH4_NMOS3_HS_Pin GPIO_PIN_11
+#define TIM1_CH4_NMOS3_HS_GPIO_Port GPIOA
 #define SPI1_CS_Pin GPIO_PIN_15
 #define SPI1_CS_GPIO_Port GPIOA
-#define Stg3_NMOS2_Pin GPIO_PIN_10
-#define Stg3_NMOS2_GPIO_Port GPIOC
-#define Stg3_NMOS4_Pin GPIO_PIN_11
-#define Stg3_NMOS4_GPIO_Port GPIOC
-#define Stg2_NMOS2_Pin GPIO_PIN_9
-#define Stg2_NMOS2_GPIO_Port GPIOB
+#define TIM1_CH3N_NMOS2_LS_Pin GPIO_PIN_9
+#define TIM1_CH3N_NMOS2_LS_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 

@@ -71,22 +71,13 @@ TIM_HandleTypeDef htim16;
 TIM_HandleTypeDef htim17;
 DMA_HandleTypeDef hdma_tim1_ch1;
 DMA_HandleTypeDef hdma_tim1_ch2;
+DMA_HandleTypeDef hdma_tim1_ch3;
+DMA_HandleTypeDef hdma_tim1_ch4;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint8_t px_ofs2 = 15;			// Offset in pixel
-// Arrays für ADC Messungen, DMA schreibt direkt in diese Arrays
-uint32_t AD_RES_BUFFER_ADC1[3];
-uint32_t AD_RES_BUFFER_ADC2[1];
-// Char Array für Konsole
-char msg_console[80];
-// Char Array für Display
-char msg_display[20];
-// PWM Modulation
-const uint32_t fPWM = 20000;	// Schaltfrequenz in [Hz]
-const uint32_t f0 = 50;			// Zu modulierende Frequenz [Hz]
-const float A0 = 1;				// Zu modulierende Amplitude [0...1]
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,6 +100,10 @@ static void MX_TIM1_Init(void);
 /* Interrupts *****************************************************************/
 // GPIO Callback
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
+	// Variables
+	uint8_t next_line = get_next_line(); // Offset in pixel
+	char msg_console[80];
+	char msg_display[20];
 	/* Prevent unused argument(s) compilation warning */
 	UNUSED(GPIO_Pin);
 	// Interrupt Routine
@@ -129,9 +124,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	case Tast1_EXTI1_Pin: // Taster1 pressed
 		// Display
 		// Clear Last Button Message
-		ST7735_FillRectangle(0, 6 * px_ofs2, 0, px_ofs2, BLACK);
+		ST7735_FillRectangle(0, 7 * next_line, 0, next_line, BLACK);
 		sprintf(msg_display, "Taster1 gedrueckt!");
-		ST7735_WriteString(0, 7 * px_ofs2, msg_display, Font_7x10, GREEN,
+		ST7735_WriteString(0, 8 * next_line, msg_display, Font_7x10, GREEN,
 		BLACK);
 		// Console
 		sprintf(msg_console, "Taster1 gedrückt! \r\n");
@@ -141,9 +136,9 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	case Tast2_EXTI2_Pin: // Taster2 pressed
 		// Display
 		// Clear Last Button Message
-		ST7735_FillRectangle(0, 6 * px_ofs2, 0, px_ofs2, BLACK);
+		ST7735_FillRectangle(0, 7 * next_line, 0, next_line, BLACK);
 		sprintf(msg_display, "Taster2 gedrueckt!");
-		ST7735_WriteString(0, 7 * px_ofs2, msg_display, Font_7x10, GREEN,
+		ST7735_WriteString(0, 8 * next_line, msg_display, Font_7x10, GREEN,
 		BLACK);
 		// Console
 		sprintf(msg_console, "Taster2 gedrückt! \r\n");
@@ -157,6 +152,12 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 
 // Timer timeout Callback
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	// Variables
+	uint8_t next_line = get_next_line(); // Offset in pixel
+	char msg_console[80];
+	char msg_display[20];
+	uint32_t f0 = get_f0();
+	float A0 = get_A0();
 	// Überprüfe welcher Timer diese callback Funktion aufruft
 	// time_val um 100ms inkrementieren
 	if (htim == &htim16) {
@@ -169,35 +170,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	else if (htim == &htim17) {
 		switch (handler_state) {
 		case IDLE:
-			ST7735_WriteString(0, px_ofs2, "Poti1: xx", Font_7x10, GREEN,
+			ST7735_WriteString(0, 4 * next_line, "Poti1: xx", Font_7x10, GREEN,
 			BLACK);
-			ST7735_WriteString(0, 2 * px_ofs2, "Poti2: xx", Font_7x10, GREEN,
+			ST7735_WriteString(0, 5 * next_line, "Poti2: xx", Font_7x10, GREEN,
 			BLACK);
-			ST7735_WriteString(0, 3 * px_ofs2, "BNC1: xx", Font_7x10, GREEN,
-			BLACK);
-			ST7735_WriteString(0, 4 * px_ofs2, "BNC2: xx", Font_7x10, GREEN,
-			BLACK);
+//			ST7735_WriteString(0, 6 * next_line, "BNC1: xx", Font_7x10, GREEN,
+//			BLACK);
+//			ST7735_WriteString(0, 7 * next_line, "BNC2: xx", Font_7x10, GREEN,
+//			BLACK);
 			break;
 		case SINUS_MOD:
 			// Display
 			adc_values *ptr = get_adc_values();
 			sprintf(msg_display, "Poti1: %2.2fV", ptr->poti1_Vf);
-			ST7735_WriteString(0, px_ofs2, msg_display, Font_7x10, GREEN,
+			ST7735_WriteString(0, 4 * next_line, msg_display, Font_7x10, GREEN,
 			BLACK);
 			sprintf(msg_display, "Poti2: %2.2fV", ptr->poti2_Vf);
-			ST7735_WriteString(0, 2 * px_ofs2, msg_display, Font_7x10, GREEN,
+			ST7735_WriteString(0, 5 * next_line, msg_display, Font_7x10, GREEN,
 			BLACK);
-			sprintf(msg_display, "BNC1:  %2.2fV", ptr->bnc1_Vf);
-			ST7735_WriteString(0, 3 * px_ofs2, msg_display, Font_7x10, GREEN,
+//			sprintf(msg_display, "BNC1:  %2.2fV", ptr->bnc1_Vf);
+//			ST7735_WriteString(0, 3 * next_line, msg_display, Font_7x10, GREEN,
+//			BLACK);
+//			sprintf(msg_display, "BNC2:  %2.2fV", ptr->bnc2_Vf);
+//			ST7735_WriteString(0, 4 * next_line, msg_display, Font_7x10, GREEN,
+//			BLACK);
+			sprintf(msg_display, "f0 =%4luHz", f0);
+			ST7735_WriteString(0, 6 * next_line, msg_display, Font_7x10, GREEN,
 			BLACK);
-			sprintf(msg_display, "BNC2:  %2.2fV", ptr->bnc2_Vf);
-			ST7735_WriteString(0, 4 * px_ofs2, msg_display, Font_7x10, GREEN,
-			BLACK);
-			sprintf(msg_display, "f0 =  %4luHz", f0);
-			ST7735_WriteString(0, 5 * px_ofs2, msg_display, Font_7x10, GREEN,
-			BLACK);
-			sprintf(msg_display, "A0 =  %2.2f%%", 100.0 * A0);
-			ST7735_WriteString(0, 6 * px_ofs2, msg_display, Font_7x10, GREEN,
+			sprintf(msg_display, "A0 =  %2.0f%%", 100.0 * A0);
+			ST7735_WriteString(0, 7 * next_line, msg_display, Font_7x10, GREEN,
 			BLACK);
 			// Console
 			sprintf(msg_console,
@@ -245,37 +246,37 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 int main(void)
 {
 
-  /* USER CODE BEGIN 1 */
+	/* USER CODE BEGIN 1 */
 
-  /* USER CODE END 1 */
+	/* USER CODE END 1 */
 
-  /* MCU Configuration--------------------------------------------------------*/
+	/* MCU Configuration--------------------------------------------------------*/
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+	HAL_Init();
 
-  /* USER CODE BEGIN Init */
+	/* USER CODE BEGIN Init */
 
-  /* USER CODE END Init */
+	/* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	/* Configure the system clock */
+	SystemClock_Config();
 
-  /* USER CODE BEGIN SysInit */
+	/* USER CODE BEGIN SysInit */
 
-  /* USER CODE END SysInit */
+	/* USER CODE END SysInit */
 
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_DMA_Init();
-  MX_SPI1_Init();
-  MX_TIM16_Init();
-  MX_ADC1_Init();
-  MX_USART2_UART_Init();
-  MX_TIM17_Init();
-  MX_ADC2_Init();
-  MX_TIM1_Init();
-  /* USER CODE BEGIN 2 */
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_DMA_Init();
+	MX_SPI1_Init();
+	MX_TIM16_Init();
+	MX_ADC1_Init();
+	MX_USART2_UART_Init();
+	MX_TIM17_Init();
+	MX_ADC2_Init();
+	MX_TIM1_Init();
+	/* USER CODE BEGIN 2 */
 
 	// Display Init
 	ST7735_Init(1);
@@ -284,18 +285,18 @@ int main(void)
 	// Set first State
 	set_handler_state(IDLE);
 
-  /* USER CODE END 2 */
+	/* USER CODE END 2 */
 
-  /* Infinite loop */
-  /* USER CODE BEGIN WHILE */
+	/* Infinite loop */
+	/* USER CODE BEGIN WHILE */
 	while (1) {
-    /* USER CODE END WHILE */
+		/* USER CODE END WHILE */
 
-    /* USER CODE BEGIN 3 */
+		/* USER CODE BEGIN 3 */
 		// Run StateMachine
 		handler_task();
 	}
-  /* USER CODE END 3 */
+	/* USER CODE END 3 */
 }
 
 /**
@@ -592,6 +593,16 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
+  sConfigOC.OCMode = TIM_OCMODE_PWM1;
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_3) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sConfigOC.OCMode = TIM_OCMODE_PWM2;
+  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
   sBreakDeadTimeConfig.OffStateRunMode = TIM_OSSR_DISABLE;
   sBreakDeadTimeConfig.OffStateIDLEMode = TIM_OSSI_DISABLE;
   sBreakDeadTimeConfig.LockLevel = TIM_LOCKLEVEL_OFF;
@@ -609,25 +620,69 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-  /* USER CODE BEGIN TIM1_Init 2 */
-  // STAGES_3
-  //	CH1 = CH2 = PWM Mode 1
-  // STAGES_2
-  //	CH1 = PWM Mode 1, CH2 = PWM Mode 2!
-	#ifdef STAGES_3
-	  sConfigOC.OCMode = TIM_OCMODE_PWM1;
-	  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
-	  {
-		Error_Handler();
-	  }
-	#else
-	  sConfigOC.OCMode = TIM_OCMODE_PWM2;
-	  if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2) != HAL_OK)
-	  {
-	    Error_Handler();
-	  }
-	#endif
-  /* USER CODE END TIM1_Init 2 */
+	/* USER CODE BEGIN TIM1_Init 2 */
+	// LEVEL_3
+	//	CH1 = CH2 = PWM Mode 1
+	// LEVEL_2
+	//	CH1 = PWM Mode 1, CH2 = PWM Mode 2!
+	// Variablen
+	char msg_console[80]; // array für Ausgabe
+	int level = get_level();
+	int stufen = get_stufen();
+
+	switch (stufen) {
+	case 1:
+		switch (level) {
+		case 2:
+			sConfigOC.OCMode = TIM_OCMODE_PWM2;
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			break;
+		case 3:
+			sConfigOC.OCMode = TIM_OCMODE_PWM1;
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			break;
+		default:
+			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!");
+			break;
+		}
+		break;
+	case 2:
+		switch (level) {
+		case 2:
+			sConfigOC.OCMode = TIM_OCMODE_PWM2;
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			break;
+		case 3:
+			break;
+		default:
+			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!");
+			break;
+		}
+		break;
+	case 3:
+		break;
+	case 4:
+	default:
+		sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!");
+		break;
+	}
+	// PuTTY Ausgabe
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg_console, strlen(msg_console),
+			HAL_MAX_DELAY);
+	/* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
 
 }
@@ -765,6 +820,12 @@ static void MX_DMA_Init(void)
   /* DMA1_Channel3_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA1_Channel3_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA1_Channel3_IRQn);
+  /* DMA1_Channel4_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel4_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+  /* DMA1_Channel5_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Channel5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Channel5_IRQn);
   /* DMA2_Channel1_IRQn interrupt configuration */
   HAL_NVIC_SetPriority(DMA2_Channel1_IRQn, 0, 0);
   HAL_NVIC_EnableIRQ(DMA2_Channel1_IRQn);
@@ -789,14 +850,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, Stg2_NMOS1_Pin|GPIO_PIN_3|GPIO_PIN_4|Stg2_NMOS4_Pin
-                          |Stg3_NMOS1_Pin|Stg3_NMOS3_Pin|Stg3_NMOS2_Pin|Stg3_NMOS4_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|SPI1_RST_Pin|SPI1_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|SPI1_RST_Pin|Stg2_NMOS3_Pin|SPI1_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, SPI1_DC_Pin|Stg2_NMOS2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(SPI1_DC_GPIO_Port, SPI1_DC_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_EXTI13_Pin */
   GPIO_InitStruct.Pin = B1_EXTI13_Pin;
@@ -804,21 +864,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_EXTI13_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : Stg2_NMOS1_Pin PC3 PC4 Stg2_NMOS4_Pin
-                           Stg3_NMOS1_Pin Stg3_NMOS3_Pin Stg3_NMOS2_Pin Stg3_NMOS4_Pin */
-  GPIO_InitStruct.Pin = Stg2_NMOS1_Pin|GPIO_PIN_3|GPIO_PIN_4|Stg2_NMOS4_Pin
-                          |Stg3_NMOS1_Pin|Stg3_NMOS3_Pin|Stg3_NMOS2_Pin|Stg3_NMOS4_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LD2_Pin SPI1_RST_Pin Stg2_NMOS3_Pin SPI1_CS_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|SPI1_RST_Pin|Stg2_NMOS3_Pin|SPI1_CS_Pin;
+  /*Configure GPIO pins : LD2_Pin SPI1_RST_Pin SPI1_CS_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|SPI1_RST_Pin|SPI1_CS_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : Tast1_EXTI1_Pin Tast2_EXTI2_Pin */
   GPIO_InitStruct.Pin = Tast1_EXTI1_Pin|Tast2_EXTI2_Pin;
@@ -826,12 +884,12 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : SPI1_DC_Pin Stg2_NMOS2_Pin */
-  GPIO_InitStruct.Pin = SPI1_DC_Pin|Stg2_NMOS2_Pin;
+  /*Configure GPIO pin : SPI1_DC_Pin */
+  GPIO_InitStruct.Pin = SPI1_DC_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  HAL_GPIO_Init(SPI1_DC_GPIO_Port, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI1_IRQn, 0, 0);

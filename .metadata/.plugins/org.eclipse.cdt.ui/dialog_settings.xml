@@ -34,7 +34,7 @@
 		<item key="scope" value="3"/>
 		<item key="workingset" value=""/>
 		<item key="references_inv" value="false"/>
-		<item key="comment" value="false"/>
+		<item key="comment" value="true"/>
 		<item key="macroDefinition" value="false"/>
 		<item key="exhausiveFileSearch" value="false"/>
 	</section>

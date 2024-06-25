@@ -12,9 +12,6 @@
 #include "GFX_FUNCTIONS.h"
 #include <math.h>
 
-//Defines----------------------------------------------------------------------------------------------------------------
-#define STAGES_3 // Auskommetiert -> 2-Stufen Modulation
-
 //-----------------------------------------------------------------------------------------------------------------------
 // Strukturen für ADC Messungen
 typedef struct {
@@ -55,7 +52,15 @@ void increase_handler_state(void);
 uint8_t get_handler_state(void);
 void inc_handler_currentTime(uint16_t dT);
 adc_values* get_adc_values(void);
-void set_pwm_values(const uint32_t fPWM, const uint32_t f0, const float A0);
-void stopp_pwm(void);
+void set_pwm_values(const int stufen, const int level);
+void stopp_pwm(const int stufen, const int level);
+void start_pwm(const int stufen, const int level);
+void set_display(const int stufen, const int level);
+
+uint8_t get_next_line(void);
+uint32_t get_f0(void);
+float get_A0(void);
+int get_level(void);
+int get_stufen(void);
 
 #endif // __TASK_HANDLER_H__
