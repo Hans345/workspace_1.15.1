@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="pwmPtr_m2p"/>
+		<item key="selection" value=""/>
 		<item key="wrap" value="false"/>
 		<item key="casesensitive" value="true"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="GPIO_PIN_3"/>
 			<item value="pwmPtr_m2p"/>
 			<item value="pwmPtr_m1p"/>
 			<item value="Error"/>
@@ -22,7 +23,6 @@
 			<item value="px_ofs2"/>
 			<item value="STAGES_3"/>
 			<item value="TIM1_ARR"/>
-			<item value="htim17"/>
 		</list>
 		<list key="replacehistory">
 			<item value="LEVEL_3"/>

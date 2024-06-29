@@ -40,6 +40,7 @@ extern ADC_HandleTypeDef hadc1;
 extern ADC_HandleTypeDef hadc2;
 
 extern TIM_HandleTypeDef htim1;
+extern TIM_HandleTypeDef htim8;
 extern TIM_HandleTypeDef htim2;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
@@ -99,6 +100,10 @@ void Error_Handler(void);
 #define SPI1_DC_GPIO_Port GPIOB
 #define TIM1_CH2N_NMOS4_LS_Pin GPIO_PIN_14
 #define TIM1_CH2N_NMOS4_LS_GPIO_Port GPIOB
+#define TIM8_CH1_NMOS1_HS_Pin GPIO_PIN_6
+#define TIM8_CH1_NMOS1_HS_GPIO_Port GPIOC
+#define TIM8_CH2_NMOS3_HS_Pin GPIO_PIN_7
+#define TIM8_CH2_NMOS3_HS_GPIO_Port GPIOC
 #define TIM1_CH1_NMOS1_HS_Pin GPIO_PIN_8
 #define TIM1_CH1_NMOS1_HS_GPIO_Port GPIOA
 #define TIM1_CH2_NMOS3_HS_Pin GPIO_PIN_9
@@ -107,6 +112,10 @@ void Error_Handler(void);
 #define TIM1_CH4_NMOS3_HS_GPIO_Port GPIOA
 #define SPI1_CS_Pin GPIO_PIN_15
 #define SPI1_CS_GPIO_Port GPIOA
+#define TIM8_CH1N_NMOS2_LS_Pin GPIO_PIN_10
+#define TIM8_CH1N_NMOS2_LS_GPIO_Port GPIOC
+#define TIM8_CH2N_NMOS4_LS_Pin GPIO_PIN_11
+#define TIM8_CH2N_NMOS4_LS_GPIO_Port GPIOC
 #define TIM1_CH3N_NMOS2_LS_Pin GPIO_PIN_9
 #define TIM1_CH3N_NMOS2_LS_GPIO_Port GPIOB
 
