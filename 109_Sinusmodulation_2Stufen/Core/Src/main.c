@@ -161,7 +161,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// Überprüfe welcher Timer diese callback Funktion aufruft
 	// time_val um 100ms inkrementieren
 	if (htim == &htim16) {
-		HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_3);
 		if (handler_state == SINUS_MOD) {
 			inc_handler_currentTime(100);
 		}
@@ -246,37 +245,37 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 int main(void)
 {
 
-	/* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
 
-	/* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-	/* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	MX_DMA_Init();
-	MX_SPI1_Init();
-	MX_TIM16_Init();
-	MX_ADC1_Init();
-	MX_USART2_UART_Init();
-	MX_TIM17_Init();
-	MX_ADC2_Init();
-	MX_TIM1_Init();
-	/* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_DMA_Init();
+  MX_SPI1_Init();
+  MX_TIM16_Init();
+  MX_ADC1_Init();
+  MX_USART2_UART_Init();
+  MX_TIM17_Init();
+  MX_ADC2_Init();
+  MX_TIM1_Init();
+  /* USER CODE BEGIN 2 */
 
 	// Display Init
 	ST7735_Init(1);
@@ -285,18 +284,18 @@ int main(void)
 	// Set first State
 	set_handler_state(IDLE);
 
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 	while (1) {
-		/* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-		/* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
 		// Run StateMachine
 		handler_task();
 	}
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
 
 /**
@@ -620,7 +619,7 @@ static void MX_TIM1_Init(void)
   {
     Error_Handler();
   }
-	/* USER CODE BEGIN TIM1_Init 2 */
+  /* USER CODE BEGIN TIM1_Init 2 */
 	// LEVEL_3
 	//	CH1 = CH2 = PWM Mode 1
 	// LEVEL_2
@@ -666,6 +665,15 @@ static void MX_TIM1_Init(void)
 			}
 			break;
 		case 3:
+			sConfigOC.OCMode = TIM_OCMODE_PWM1;
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_2)
+					!= HAL_OK) {
+				Error_Handler();
+			}
+			if (HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_4)
+					!= HAL_OK) {
+				Error_Handler();
+			}
 			break;
 		default:
 			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!");
@@ -682,7 +690,7 @@ static void MX_TIM1_Init(void)
 	// PuTTY Ausgabe
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg_console, strlen(msg_console),
 			HAL_MAX_DELAY);
-	/* USER CODE END TIM1_Init 2 */
+  /* USER CODE END TIM1_Init 2 */
   HAL_TIM_MspPostInit(&htim1);
 
 }
@@ -850,10 +858,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|SPI1_RST_Pin|SPI1_CS_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3|GPIO_PIN_4, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_4, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|SPI1_RST_Pin|SPI1_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(SPI1_DC_GPIO_Port, SPI1_DC_Pin, GPIO_PIN_RESET);
@@ -863,6 +871,13 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_EXTI13_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC3 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pins : LD2_Pin SPI1_RST_Pin SPI1_CS_Pin */
   GPIO_InitStruct.Pin = LD2_Pin|SPI1_RST_Pin|SPI1_CS_Pin;

@@ -22,8 +22,9 @@ uint32_t AD_RES_BUFFER_ADC2[1];
 pwm_sin_mod *pwmPtr_m1p;
 pwm_sin_mod *pwmPtr_m1n;
 pwm_sin_mod *pwmPtr_m2p;
+pwm_sin_mod *pwmPtr_m2n;
 const int stufen = 2;
-const int level = 2;
+const int level = 3;
 const uint32_t fPWM = 20000;	// Schaltfrequenz in [Hz]
 const uint32_t f0 = 500;		// Zu modulierende Frequenz [Hz]
 const float A0 = 1.0;			// Zu modulierende Amplitude [0...1.5]
@@ -156,17 +157,17 @@ adc_values* get_adc_values(void) {
 }
 
 void set_pwm_values(const int stufen, const int level) {
-	// Char array für ausgabe
-	char msg_console[80] = "";
+	// Char array für Ausgabe
+	char msg_console[200] = "";
 	// Konstanten
 	const float pi = M_PI;
 	uint32_t sz = (uint32_t)(fPWM/f0);
 	const float dRad = (2 * pi) / (sz - 1);	// Winkelschritt [rad]
 	const float norm0 = ((TIM1->ARR) / 2) + 1;
+	const float posOffset0 = 1;
 	// Variablen
 	uint32_t i = 0;
 	float sin_val = 0;
-	float posOffset0 = 1;
 	float posOffsetCurr_1 = 0;
 	float normCurr_1 = 0;
 	// Speicher dynamisch allozieren
@@ -268,6 +269,60 @@ void set_pwm_values(const int stufen, const int level) {
 			}
 			break;
 		case 3:
+			pwmPtr_m1p = malloc(sizeof(pwm_sin_mod) + sz * sizeof(uint32_t));
+			pwmPtr_m1p->NrOfEl = sz;
+			pwmPtr_m1n = malloc(sizeof(pwm_sin_mod) + sz * sizeof(uint32_t));
+			pwmPtr_m1n->NrOfEl = sz;
+			pwmPtr_m2p = malloc(sizeof(pwm_sin_mod) + sz * sizeof(uint32_t));
+			pwmPtr_m2p->NrOfEl = sz;
+			pwmPtr_m2n = malloc(sizeof(pwm_sin_mod) + sz * sizeof(uint32_t));
+			pwmPtr_m2n->NrOfEl = sz;
+			// Struktur mit Werten füllen
+			for (i = 0; i < sz; i++) {
+				if (i == 0) {
+					// m1p, m2p
+					pwmPtr_m1p->ccr_arr[i] = (uint32_t) norm0 * stufen;
+					if (norm0 * stufen - TIM1->ARR < 0) {
+						pwmPtr_m2p->ccr_arr[i] = 0;
+					} else {
+						pwmPtr_m2p->ccr_arr[i] = (uint32_t) norm0 * stufen
+								- TIM1->ARR;
+					}
+					// m1n, m2n, Werte kopieren
+					pwmPtr_m1n->ccr_arr[i] = pwmPtr_m2p->ccr_arr[i];
+					pwmPtr_m2n->ccr_arr[i] = pwmPtr_m1p->ccr_arr[i];
+				} else {
+					// m1p, m2p
+					sin_val = A0 * sinf(i * dRad);
+					posOffsetCurr_1 = posOffset0 + sin_val;
+					normCurr_1 = norm0 * posOffsetCurr_1;
+					pwmPtr_m1p->ccr_arr[i] = (uint32_t) normCurr_1 * stufen;
+					if (normCurr_1 * stufen - TIM1->ARR < 0) {
+						pwmPtr_m2p->ccr_arr[i] = 0;
+					} else {
+						pwmPtr_m2p->ccr_arr[i] = (uint32_t) normCurr_1 * stufen
+								- TIM1->ARR;
+					}
+					// m1n, m2n, Werte kopieren
+					pwmPtr_m1n->ccr_arr[i] = pwmPtr_m2p->ccr_arr[i];
+					pwmPtr_m2n->ccr_arr[i] = pwmPtr_m1p->ccr_arr[i];
+				}
+			}
+			// m1n, m2n, Array drehen
+			int d = sz/2;
+			Rotate(pwmPtr_m1n->ccr_arr, d, sz);
+			Rotate(pwmPtr_m2n->ccr_arr, d, sz);
+			// Werte Ausgeben
+			for (i = 0; i < sz; i++){
+				// Dynamisch allozierter Speicher mit PuTTY Konsole ausgeben
+				sprintf(msg_console,
+						"pwmPtr_m1p->ccr_arr[%lu]: %3lu | pwmPtr_m1n->ccr_arr[%lu]: %3lu | pwmPtr_m2p->ccr_arr[%lu]: %3lu | pwmPtr_m2n->ccr_arr[%lu]: %3lu\r\n",
+						i, pwmPtr_m1p->ccr_arr[i], i, pwmPtr_m1n->ccr_arr[i],
+						i, pwmPtr_m2p->ccr_arr[i], i, pwmPtr_m2n->ccr_arr[i]);
+				// PuTTY Ausgabe
+				HAL_UART_Transmit(&huart2, (uint8_t*) msg_console,
+						strlen(msg_console), HAL_MAX_DELAY);
+			}
 			break;
 		default:
 			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
@@ -303,6 +358,8 @@ void set_pwm_values(const int stufen, const int level) {
 }
 
 void stopp_pwm(const int stufen, const int level) {
+	// Debug
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_SET);
 	// Variablen
 	char msg_console[80] = ""; // array für Ausgabe
 	uint16_t gpio_state = GPIO_PIN_SET;
@@ -383,6 +440,10 @@ void stopp_pwm(const int stufen, const int level) {
 			free(pwmPtr_m2p);
 			break;
 		case 3:
+			free(pwmPtr_m1p);
+			free(pwmPtr_m1n);
+			free(pwmPtr_m2p);
+			free(pwmPtr_m2n);
 			break;
 		default:
 			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
@@ -396,6 +457,8 @@ void stopp_pwm(const int stufen, const int level) {
 		sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
 		break;
 	}
+	// Debug
+	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
 	// PuTTY Ausgabe
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg_console, strlen(msg_console), HAL_MAX_DELAY);
 }
@@ -454,6 +517,22 @@ void start_pwm(const int stufen, const int level)
 			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_4);
 			break;
 		case 3:
+			// TIM1_CH1 & CH1N
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1,
+					(uint32_t*) pwmPtr_m1p->ccr_arr, pwmPtr_m1p->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
+			// TIM1 CH2 & CH2N
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2,
+					(uint32_t*) pwmPtr_m1n->ccr_arr, pwmPtr_m1n->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+			// TIM1_CH3 & CH3N
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_3,
+					(uint32_t*) pwmPtr_m2p->ccr_arr, pwmPtr_m2p->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_3);
+			// TIM1 CH4 & CH4N
+			HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_4,
+					(uint32_t*) pwmPtr_m2n->ccr_arr, pwmPtr_m2n->NrOfEl);
+			HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_4);
 			break;
 		default:
 			sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
@@ -504,4 +583,35 @@ int get_level(void) {
 
 int get_stufen(void) {
 	return stufen;
+}
+
+// Function to rotate array
+void Rotate(uint32_t arr[], int d, int n)
+{    d=d%n;
+    // Storing rotated version of array
+    uint32_t temp[n];
+
+    // Keeping track of the current index
+    // of temp[]
+    int k = 0;
+
+    // Storing the n - d elements of
+    // array arr[] to the front of temp[]
+    for (int i = d; i < n; i++) {
+        temp[k] = arr[i];
+        k++;
+    }
+
+    // Storing the first d elements of array arr[]
+    //  into temp
+    for (int i = 0; i < d; i++) {
+        temp[k] = arr[i];
+        k++;
+    }
+
+    // Copying the elements of temp[] in arr[]
+    // to get the final rotated array
+    for (int i = 0; i < n; i++) {
+        arr[i] = temp[i];
+    }
 }
