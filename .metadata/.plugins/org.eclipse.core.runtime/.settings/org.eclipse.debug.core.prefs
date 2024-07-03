@@ -5,4 +5,4 @@
 //org.eclipse.debug.core.PREFERRED_DELEGATES/org.eclipse.cdt.launch.remoteApplicationLaunchType=org.eclipse.rse.remotecdt.dsf.debug,debug,;
 eclipse.preferences.version=1
 org.eclipse.debug.core.PREF_BREAKPOINT_MANAGER_ENABLED_STATE=true
-prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n    <expression enabled\="true" text\="TIM8-&gt;ARR"/>\r\n    <expression enabled\="true" text\="normCurr_1 * stufen"/>\r\n</watchExpressions>\r\n
+prefWatchExpressions=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?>\r\n<watchExpressions>\r\n    <expression enabled\="true" text\="pwmPtr_m2p-&gt;ccr_arr[i]"/>\r\n    <expression enabled\="true" text\="i"/>\r\n    <expression enabled\="true" text\="normCurr_1 * stufen - TIM1-&gt;ARR"/>\r\n    <expression enabled\="true" text\="(uint32_t)(normCurr_1 * stufen - TIM1-&gt;ARR)"/>\r\n</watchExpressions>\r\n

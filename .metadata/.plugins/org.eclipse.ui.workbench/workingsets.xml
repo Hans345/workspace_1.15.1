@@ -3,6 +3,7 @@
 <workingSet editPageId="org.eclipse.cdt.ui.CElementWorkingSetPage" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1715613117637_1" label="Projektarbeit2" name="Projektarbeit2">
 <item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/100_Display_wo_DMA_Test" type="4"/>
 <item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/103_Plecs_Test" type="4"/>
+<item factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/109_Sinusmodulation_1-3Stufen" type="4"/>
 </workingSet>
 <workingSet aggregate="true" factoryID="org.eclipse.ui.internal.WorkingSetFactory" id="1715612997920_0" label="Window Working Set" name="Aggregate for window 1715612997920"/>
 <mruList name="Projektarbeit2"/>

@@ -36,9 +36,11 @@ org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:107_Sinusmodulation_2Stufen/act
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:108_Show_Timervalues\ Debug/activeLaunchMode=debug
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:108_Show_Timervalues\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:108_Sinusmodulation_2Stufen/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:109_Sinusmodulation_1-3Stufen/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:109_Sinusmodulation_2Stufen\ Debug/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:109_Sinusmodulation_2Stufen\ Debug/activeLaunchTarget=null\:---
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:109_Sinusmodulation_2Stufen/activeLaunchMode=debug
+org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:110_TimerSync_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:CPP_autoconsole/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchMode=run
 org.eclipse.cdt.dsf.gdb.gdbRemotedescriptorType\:Display_Test/activeLaunchTarget=null\:---
