@@ -74,7 +74,7 @@ extern DMA_HandleTypeDef hdma_tim8_ch2;
 /* USER CODE END 0 */
 
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                                        /**
+                                                            /**
   * Initializes the Global MSP.
   */
 void HAL_MspInit(void)
@@ -490,6 +490,17 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
 
   /* USER CODE END TIM8_MspInit 1 */
   }
+  else if(htim_base->Instance==TIM15)
+  {
+  /* USER CODE BEGIN TIM15_MspInit 0 */
+
+  /* USER CODE END TIM15_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM15_CLK_ENABLE();
+  /* USER CODE BEGIN TIM15_MspInit 1 */
+
+  /* USER CODE END TIM15_MspInit 1 */
+  }
   else if(htim_base->Instance==TIM16)
   {
   /* USER CODE BEGIN TIM16_MspInit 0 */
@@ -517,6 +528,17 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE BEGIN TIM17_MspInit 1 */
 
   /* USER CODE END TIM17_MspInit 1 */
+  }
+  else if(htim_base->Instance==TIM20)
+  {
+  /* USER CODE BEGIN TIM20_MspInit 0 */
+
+  /* USER CODE END TIM20_MspInit 0 */
+    /* Peripheral clock enable */
+    __HAL_RCC_TIM20_CLK_ENABLE();
+  /* USER CODE BEGIN TIM20_MspInit 1 */
+
+  /* USER CODE END TIM20_MspInit 1 */
   }
 
 }
@@ -612,6 +634,27 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef* htim)
 
   /* USER CODE END TIM8_MspPostInit 1 */
   }
+  else if(htim->Instance==TIM20)
+  {
+  /* USER CODE BEGIN TIM20_MspPostInit 0 */
+
+  /* USER CODE END TIM20_MspPostInit 0 */
+
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    /**TIM20 GPIO Configuration
+    PC8     ------> TIM20_CH3
+    */
+    GPIO_InitStruct.Pin = TIM20_CH3_Master_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+    GPIO_InitStruct.Pull = GPIO_PULLUP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Alternate = GPIO_AF6_TIM20;
+    HAL_GPIO_Init(TIM20_CH3_Master_GPIO_Port, &GPIO_InitStruct);
+
+  /* USER CODE BEGIN TIM20_MspPostInit 1 */
+
+  /* USER CODE END TIM20_MspPostInit 1 */
+  }
 
 }
 /**
@@ -672,6 +715,17 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
 
   /* USER CODE END TIM8_MspDeInit 1 */
   }
+  else if(htim_base->Instance==TIM15)
+  {
+  /* USER CODE BEGIN TIM15_MspDeInit 0 */
+
+  /* USER CODE END TIM15_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM15_CLK_DISABLE();
+  /* USER CODE BEGIN TIM15_MspDeInit 1 */
+
+  /* USER CODE END TIM15_MspDeInit 1 */
+  }
   else if(htim_base->Instance==TIM16)
   {
   /* USER CODE BEGIN TIM16_MspDeInit 0 */
@@ -713,6 +767,17 @@ void HAL_TIM_Base_MspDeInit(TIM_HandleTypeDef* htim_base)
   /* USER CODE BEGIN TIM17_MspDeInit 1 */
 
   /* USER CODE END TIM17_MspDeInit 1 */
+  }
+  else if(htim_base->Instance==TIM20)
+  {
+  /* USER CODE BEGIN TIM20_MspDeInit 0 */
+
+  /* USER CODE END TIM20_MspDeInit 0 */
+    /* Peripheral clock disable */
+    __HAL_RCC_TIM20_CLK_DISABLE();
+  /* USER CODE BEGIN TIM20_MspDeInit 1 */
+
+  /* USER CODE END TIM20_MspDeInit 1 */
   }
 
 }

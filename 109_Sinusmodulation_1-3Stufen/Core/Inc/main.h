@@ -42,6 +42,7 @@ extern ADC_HandleTypeDef hadc2;
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim8;
 extern TIM_HandleTypeDef htim2;
+extern TIM_HandleTypeDef htim20;
 extern TIM_HandleTypeDef htim16;
 extern TIM_HandleTypeDef htim17;
 
@@ -104,6 +105,8 @@ void Error_Handler(void);
 #define TIM8_CH1_NMOS1_HS_GPIO_Port GPIOC
 #define TIM8_CH2_NMOS3_HS_Pin GPIO_PIN_7
 #define TIM8_CH2_NMOS3_HS_GPIO_Port GPIOC
+#define TIM20_CH3_Master_Pin GPIO_PIN_8
+#define TIM20_CH3_Master_GPIO_Port GPIOC
 #define TIM1_CH1_NMOS1_HS_Pin GPIO_PIN_8
 #define TIM1_CH1_NMOS1_HS_GPIO_Port GPIOA
 #define TIM1_CH2_NMOS3_HS_Pin GPIO_PIN_9

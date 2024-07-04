@@ -62,7 +62,7 @@ uint32_t get_f0(void);
 float get_A0(void);
 int get_level(void);
 int get_stufen(void);
-void Rotate(uint32_t arr[], int d, const int n);
-void Flip(uint32_t arr[], const int n);
+void rotate(uint32_t arr[], int d, const int n);
+void flip(uint32_t arr[], const int n);
 
 #endif // __TASK_HANDLER_H__

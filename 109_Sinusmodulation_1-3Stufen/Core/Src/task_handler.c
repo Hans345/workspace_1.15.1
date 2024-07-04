@@ -28,7 +28,7 @@ pwm_sin_mod *pwmPtr_m3n;
 const int stufen = 3;
 const int level = 3;
 const uint32_t fPWM = 20000;	// Schaltfrequenz in [Hz]
-const uint32_t f0 = 485;		// Zu modulierende Frequenz [Hz]
+const uint32_t f0 = 100;		// Zu modulierende Frequenz [Hz]
 const float A0 = 1.0;			// Zu modulierende Amplitude [0...1.5]
 
 void enter_handler_state(int state) {
@@ -317,8 +317,8 @@ void set_pwm_values(const int stufen, const int level) {
 				pwmPtr_m2n->ccr_arr[i] = pwmPtr_m1p->ccr_arr[i];
 			}
 			// m1n, m2n, Array drehen
-			Flip(pwmPtr_m1n->ccr_arr, sz);
-			Flip(pwmPtr_m2n->ccr_arr, sz);
+			flip(pwmPtr_m1n->ccr_arr, sz);
+			flip(pwmPtr_m2n->ccr_arr, sz);
 			// Werte Ausgeben
 			for (i = 0; i < sz; i++){
 				// Dynamisch allozierter Speicher mit PuTTY Konsole ausgeben
@@ -455,9 +455,9 @@ void set_pwm_values(const int stufen, const int level) {
 				pwmPtr_m3n->ccr_arr[i] = pwmPtr_m1p->ccr_arr[i];
 			}
 			// m1n, m2n, m3n, Array drehen
-			Flip(pwmPtr_m1n->ccr_arr, sz);
-			Flip(pwmPtr_m2n->ccr_arr, sz);
-			Flip(pwmPtr_m3n->ccr_arr, sz);
+			flip(pwmPtr_m1n->ccr_arr, sz);
+			flip(pwmPtr_m2n->ccr_arr, sz);
+			flip(pwmPtr_m3n->ccr_arr, sz);
 			// Werte Ausgeben
 			for (i = 0; i < sz; i++){
 				// Dynamisch allozierter Speicher mit PuTTY Konsole ausgeben
@@ -663,6 +663,8 @@ void stopp_pwm(const int stufen, const int level) {
 		sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
 		break;
 	}
+	// Stopp Master Timer
+	HAL_TIM_PWM_Stop(&htim20, TIM_CHANNEL_3);
 	// Debug
 	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_3, GPIO_PIN_RESET);
 	// PuTTY Ausgabe
@@ -809,6 +811,8 @@ void start_pwm(const int stufen, const int level)
 		sprintf(msg_console, "Error: Stufen 1-4 und Level 2-3 moeglich!\n");
 		break;
 	}
+	// Start Master Timer for Synchronisation
+	HAL_TIM_PWM_Start(&htim20, TIM_CHANNEL_3);
 	// PuTTY Ausgabe
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg_console, strlen(msg_console), HAL_MAX_DELAY);
 }
@@ -849,7 +853,7 @@ int get_stufen(void) {
 }
 
 // Function to rotate array
-void Rotate(uint32_t arr[], int d, const int n)
+void rotate(uint32_t arr[], int d, const int n)
 {    d=d%n;
     // Storing rotated version of array
     uint32_t temp[n];
@@ -880,7 +884,7 @@ void Rotate(uint32_t arr[], int d, const int n)
 }
 
 // Function to flip array values
-void Flip(uint32_t arr[], const int n)
+void flip(uint32_t arr[], const int n)
 {
 	// Storing fliped version of array
 	uint32_t temp[n];
